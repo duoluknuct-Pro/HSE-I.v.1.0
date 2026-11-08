@@ -194,14 +194,14 @@
           </button>
         </div>
 
-        <!-- KPI Cards Grid -->
+        <!-- KPI Cards Grid (Di-set 0 secara default, akan terupdate otomatis dari Spreadsheet) -->
         <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
           <div class="glass-card p-4 rounded-xl border-l-4 border-l-emerald-500">
             <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
               <span>PTW Aktif</span>
               <i class="fa-solid fa-file-signature text-emerald-400"></i>
             </div>
-            <div class="text-2xl font-bold text-white mt-2" id="kpi-ptw">12</div>
+            <div class="text-2xl font-bold text-white mt-2" id="kpi-ptw">0</div>
             <span class="text-[10px] text-emerald-400">Permit Terverifikasi</span>
           </div>
 
@@ -210,7 +210,7 @@
               <span>High Risk HIRADC</span>
               <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
             </div>
-            <div class="text-2xl font-bold text-white mt-2" id="kpi-hiradc">5</div>
+            <div class="text-2xl font-bold text-white mt-2" id="kpi-hiradc">0</div>
             <span class="text-[10px] text-rose-400">Mitigasi Diperlukan</span>
           </div>
 
@@ -219,7 +219,7 @@
               <span>Total Insiden YTD</span>
               <i class="fa-solid fa-user-injured text-amber-400"></i>
             </div>
-            <div class="text-2xl font-bold text-white mt-2" id="kpi-incidents">3</div>
+            <div class="text-2xl font-bold text-white mt-2" id="kpi-incidents">0</div>
             <span class="text-[10px] text-amber-400">0 Fatality</span>
           </div>
 
@@ -228,7 +228,7 @@
               <span>Compliance Rate</span>
               <i class="fa-solid fa-shield-check text-blue-400"></i>
             </div>
-            <div class="text-2xl font-bold text-white mt-2" id="kpi-compliance">94%</div>
+            <div class="text-2xl font-bold text-white mt-2" id="kpi-compliance">100%</div>
             <span class="text-[10px] text-blue-400">Standard ISO 45001</span>
           </div>
 
@@ -237,7 +237,7 @@
               <span>CAPA Pending</span>
               <i class="fa-solid fa-list-check text-orange-400"></i>
             </div>
-            <div class="text-2xl font-bold text-white mt-2" id="kpi-capa">4</div>
+            <div class="text-2xl font-bold text-white mt-2" id="kpi-capa">0</div>
             <span class="text-[10px] text-orange-400">Memerlukan Action</span>
           </div>
         </div>
@@ -349,7 +349,7 @@
                 </tr>
               </thead>
               <tbody id="incidentTableBody" class="divide-y divide-slate-800">
-                <!-- Dynamic Content -->
+                <tr><td colspan="6" class="p-4 text-center text-slate-500">Belum ada data insiden.</td></tr>
               </tbody>
             </table>
           </div>
@@ -399,7 +399,7 @@
                 </tr>
               </thead>
               <tbody id="sioTableBody" class="divide-y divide-slate-800">
-                <!-- Dynamic Data -->
+                <tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada data sertifikasi.</td></tr>
               </tbody>
             </table>
           </div>
@@ -419,7 +419,7 @@
           </button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="csmsContainer">
-          <!-- CSMS Contractor Score Cards -->
+          <div class="glass-card p-4 rounded-xl text-center text-slate-500 col-span-full">Belum ada data CSMS vendor.</div>
         </div>
       </section>
 
@@ -436,13 +436,9 @@
           </button>
         </div>
         <div class="glass-card rounded-xl p-4">
-          <div class="space-y-2 text-xs">
-            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 flex justify-between items-center">
-              <div>
-                <span class="font-bold text-emerald-400">Permenaker No. 5/2018</span>
-                <p class="text-slate-400">Lingkungan Kerja & Pengukuran HKL</p>
-              </div>
-              <span class="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 font-semibold">Compliant</span>
+          <div class="space-y-2 text-xs" id="legalContainer">
+            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 text-center text-slate-500">
+              Belum ada data legal compliance tersimpan.
             </div>
           </div>
         </div>
@@ -461,7 +457,7 @@
           </button>
         </div>
         <div class="glass-card p-5 rounded-xl">
-          <p class="text-xs text-slate-400">Gunakan tombol di atas untuk mencatat kegiatan Toolbox Meeting atau Safety Induction baru.</p>
+          <p class="text-xs text-slate-500 text-center">Belum ada jadwal training atau TBM.</p>
         </div>
       </section>
 
@@ -489,7 +485,7 @@
                 </tr>
               </thead>
               <tbody id="inventoryTableBody" class="divide-y divide-slate-800">
-                <!-- Dynamic inventory -->
+                <tr><td colspan="4" class="p-4 text-center text-slate-500">Belum ada data inventory APD.</td></tr>
               </tbody>
             </table>
           </div>
@@ -521,7 +517,7 @@
                 </tr>
               </thead>
               <tbody id="capaTableBody" class="divide-y divide-slate-800">
-                <!-- Dynamic CAPA Data -->
+                <tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada data CAPA.</td></tr>
               </tbody>
             </table>
           </div>
@@ -602,7 +598,7 @@
         <button onclick="closeModal('hiradcModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       <form id="hiradcForm" onsubmit="submitForm(event, 'addHiradc', 'hiradcForm', 'hiradcModal')" class="space-y-3 text-xs">
-        <div><label class="block text-slate-300 mb-1">Risk ID</label><input type="text" name="Risk_ID" value="RKS-003" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Risk ID</label><input type="text" name="Risk_ID" value="RKS-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Aktivitas Kerja</label><input type="text" name="Activity" placeholder="Contoh: Perbaikan Panel" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Bahaya (Hazard)</label><input type="text" name="Hazard" placeholder="Contoh: Sengatan Listrik" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Initial Risk</label><select name="Initial_Risk" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="HIGH">HIGH</option><option value="MEDIUM">MEDIUM</option><option value="LOW">LOW</option></select></div>
@@ -625,7 +621,7 @@
         <button onclick="closeModal('ptwModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       <form id="ptwForm" onsubmit="submitForm(event, 'submitPtw', 'ptwForm', 'ptwModal')" class="space-y-3 text-xs">
-        <div><label class="block text-slate-300 mb-1">PTW ID</label><input type="text" name="PTW_ID" value="PTW-2026-091" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">PTW ID</label><input type="text" name="PTW_ID" value="PTW-2026-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Tipe Kerja (Work Type)</label><input type="text" name="Work_Type" placeholder="Hot Work / Confined Space" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Lokasi</label><input type="text" name="Location" placeholder="Area Boiler Room" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Pemohon (Applicant)</label><input type="text" name="Applicant" placeholder="Nama Pemohon" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
@@ -676,7 +672,7 @@
         <div><label class="block text-slate-300 mb-1">Inspector</label><input type="text" name="Inspector" placeholder="Nama Auditor" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Tanggal</label><input type="date" name="Date" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Lokasi</label><input type="text" name="Location" placeholder="Area Inspeksi" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Checklist Notes (JSON / Catatan)</label><input type="text" name="Checklist_JSON" value="Semua APD & APAR Normal" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Checklist Notes (Catatan)</label><input type="text" name="Checklist_JSON" value="Semua APD & APAR Normal" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Score (%)</label><input type="number" name="Score" value="95" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Status</label><select name="Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Pass">Pass</option><option value="Needs Follow-up">Needs Follow-up</option></select></div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
@@ -828,16 +824,9 @@
     // --- STATE MANAGEMENT ---
     let GAS_URL = localStorage.getItem('HSE_INIT_GAS_URL') || '';
     
-    // Mock Data Defaults
-    const sampleHIRADC = [
-      { id: 'RKS-001', activity: 'Pengelasan Tangki BBM', hazard: 'Uap Flammable / Percikan Api', initialRisk: 'HIGH', control: 'Hot Work Permit & Fire Watcher', residualRisk: 'LOW' },
-      { id: 'RKS-002', activity: 'Bekerja di Ketinggian 15m', hazard: 'Potensi Jatuh dari Ketinggian', initialRisk: 'HIGH', control: 'Full Body Harness Double Lanyard', residualRisk: 'MEDIUM' }
-    ];
-
-    const samplePTW = [
-      { id: 'PTW-2026-089', type: 'Hot Work (Izin Kerja Panas)', location: 'Area Boiler Room', status: 'Approved', applicant: 'Budi Santoso' },
-      { id: 'PTW-2026-090', type: 'Confined Space', location: 'Tangki Penyimpanan #3', status: 'Pending Approval', applicant: 'Rahmat Hidayat' }
-    ];
+    // Array Data Awal Kosong (Akan ditarik langsung dari Spreadsheet jika terhubung)
+    let sampleHIRADC = [];
+    let samplePTW = [];
 
     // --- INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
@@ -847,6 +836,11 @@
       renderSampleData();
       checkBackendConfig();
       registerServiceWorkerAndPWA();
+      
+      // Jika URL GAS sudah diset, otomatis tarik data nyata dari spreadsheet
+      if (GAS_URL) {
+        syncAllData();
+      }
     });
 
     // --- TAB SWITCHING ---
@@ -878,14 +872,14 @@
           labels: ['Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov'],
           datasets: [{
             label: 'Safety Observation',
-            data: [12, 19, 15, 25, 22, 30],
+            data: [0, 0, 0, 0, 0, 0],
             borderColor: '#22c55e',
             backgroundColor: 'rgba(34, 197, 94, 0.1)',
             fill: true,
             tension: 0.3
           }, {
             label: 'Near Miss / Insiden',
-            data: [2, 1, 3, 0, 1, 0],
+            data: [0, 0, 0, 0, 0, 0],
             borderColor: '#f43f5e',
             tension: 0.3
           }]
@@ -907,7 +901,7 @@
         data: {
           labels: ['Low Risk', 'Medium Risk', 'High Risk'],
           datasets: [{
-            data: [65, 25, 10],
+            data: [1, 1, 1],
             backgroundColor: ['#22c55e', '#f59e0b', '#ef4444']
           }]
         },
@@ -919,9 +913,13 @@
       });
     }
 
-    // --- UI RENDERING FUNCTIONS ---
+    // --- UI RENDERING FUNCTIONS (HANDLE EMPTY STATE) ---
     function renderHiradcTable() {
       const tbody = document.getElementById('hiradcTableBody');
+      if (sampleHIRADC.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-500">Belum ada data HIRADC di spreadsheet.</td></tr>`;
+        return;
+      }
       tbody.innerHTML = sampleHIRADC.map(item => `
         <tr class="hover:bg-slate-900/50">
           <td class="p-3 font-mono text-emerald-400 font-semibold">${item.id}</td>
@@ -937,6 +935,10 @@
 
     function renderPtwCards() {
       const container = document.getElementById('ptwCardsContainer');
+      if (samplePTW.length === 0) {
+        container.innerHTML = `<div class="glass-card p-4 rounded-xl text-center text-slate-500 col-span-full">Belum ada data PTW di spreadsheet.</div>`;
+        return;
+      }
       container.innerHTML = samplePTW.map(ptw => `
         <div class="glass-card p-4 rounded-xl space-y-3">
           <div class="flex justify-between items-start">
@@ -954,24 +956,7 @@
     }
 
     function renderSampleData() {
-      document.getElementById('sioTableBody').innerHTML = `
-        <tr>
-          <td class="p-3 text-white">Agus Setiawan</td>
-          <td class="p-3">SIO Operator Crane</td>
-          <td class="p-3 font-mono">SIO-7781-K3</td>
-          <td class="p-3 text-amber-400">12 Des 2026</td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400">Aktif</span></td>
-        </tr>
-      `;
-
-      document.getElementById('inventoryTableBody').innerHTML = `
-        <tr>
-          <td class="p-3 text-white font-medium">Full Body Harness Double Lanyard</td>
-          <td class="p-3 font-bold">45 Pcs</td>
-          <td class="p-3">10 Pcs</td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400">Stok Aman</span></td>
-        </tr>
-      `;
+      // Tabel lainnya dibiarkan kosong default merespons spreadsheet kosong
     }
 
     // --- CONFIG & BACKEND CONNECTIVITY ---
@@ -987,6 +972,7 @@
       localStorage.setItem('HSE_INIT_GAS_URL', GAS_URL);
       closeSettingsModal();
       checkBackendConfig();
+      syncAllData();
     }
     function checkBackendConfig() {
       const statusText = document.getElementById('backendStatusText');
@@ -1070,6 +1056,8 @@
             document.getElementById('kpi-incidents').innerText = res.data.totalIncidents;
             document.getElementById('kpi-capa').innerText = res.data.pendingCapa;
           }
+        }).catch(err => {
+          console.error("Gagal sinkronisasi data dashboard:", err);
         });
       }
     }
