@@ -63,6 +63,52 @@
 </head>
 <body class="h-full flex flex-col font-sans antialiased text-slate-200 bg-slate-950 overflow-x-hidden">
 
+  <!-- LOGIN / ROLE SELECTION OVERLAY -->
+  <div id="loginOverlay" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-6 shadow-2xl">
+      <div class="text-center space-y-2">
+        <div class="inline-flex h-12 w-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 items-center justify-center text-emerald-400 text-xl font-bold">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h2 class="text-xl font-bold text-white">Selamat Datang di HSE-Init</h2>
+        <p class="text-xs text-slate-400">Silakan pilih akses login untuk melanjutkan ke sistem.</p>
+      </div>
+
+      <!-- Tab Selector for Login -->
+      <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+        <button type="button" onclick="switchLoginTab('user')" id="tabUserBtn" class="py-2.5 rounded-lg bg-emerald-600 text-white transition">Login User</button>
+        <button type="button" onclick="switchLoginTab('admin')" id="tabAdminBtn" class="py-2.5 rounded-lg text-slate-400 hover:text-white transition">Login Admin</button>
+      </div>
+
+      <!-- Form User -->
+      <form id="userLoginForm" onsubmit="handleUserLogin(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-slate-300 mb-1">Nama Lengkap Anda</label>
+          <input type="text" id="userNameInput" placeholder="Contoh: Budi Santoso" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">Departemen / Bagian</label>
+          <input type="text" id="userDeptInput" placeholder="Contoh: Maintenance / Produksi" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none">
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-3 rounded-lg transition shadow-lg shadow-emerald-900/30">
+          Masuk sebagai User
+        </button>
+      </form>
+
+      <!-- Form Admin -->
+      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-4 text-xs hidden">
+        <div>
+          <label class="block text-slate-300 mb-1">Password / PIN Admin</label>
+          <input type="password" id="adminPasswordInput" placeholder="Masukkan PIN admin (default: PIN dari Admin)" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none">
+          <p class="text-[10px] text-slate-500 mt-1">Default PIN: <code class="text-emerald-400">Hubungi Admin</code></p>
+        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold p-3 rounded-lg transition shadow-lg shadow-blue-900/30">
+          Masuk sebagai Admin (Full Control)
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- TOP HEADER NAVBAR -->
   <header class="sticky top-0 z-40 w-full glass-card border-b border-slate-800 bg-slate-900/90 px-4 py-3 flex items-center justify-between">
     <div class="flex items-center space-x-3">
@@ -75,7 +121,7 @@
         </div>
         <div>
           <h1 class="text-lg font-bold tracking-wide text-white leading-tight">HSE-Init</h1>
-          <p class="text-[10px] text-emerald-400 font-medium">Digital K3 Platform</p>
+          <p class="text-[10px] text-emerald-400 font-medium" id="userRoleBadge">Digital K3 Platform</p>
         </div>
       </div>
     </div>
@@ -87,8 +133,15 @@
         <span id="backendStatusText">GAS Connected</span>
       </div>
 
-      <button onclick="openSettingsModal()" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition" title="Konfigurasi API Backend">
+      <!-- TOMBOL SETTINGS (Hanya Muncul Jika Login sebagai Admin) -->
+      <button id="adminSettingsBtn" onclick="openSettingsModal()" class="hidden p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition" title="Konfigurasi API Backend">
         <i class="fa-solid fa-gear text-lg"></i>
+      </button>
+
+      <!-- Tombol Logout / Ganti Akun -->
+      <button onclick="handleLogout()" class="p-2 text-rose-400 hover:bg-rose-500/10 rounded-lg transition text-xs flex items-center space-x-1" title="Keluar / Ganti Akun">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span class="hidden sm:inline" id="loggedInNameLabel">Keluar</span>
       </button>
 
       <button id="pwaInstallBtn" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg font-semibold flex items-center space-x-1.5 shadow-lg shadow-emerald-900/30 transition">
@@ -524,7 +577,7 @@
         </div>
       </section>
 
-      <!-- DYNAMIC TAB 12: EXPORT & REPORTS (UPDATED WITH DYNAMIC PERIOD) -->
+      <!-- DYNAMIC TAB 12: EXPORT & REPORTS -->
       <section id="tab-reports" class="tab-content hidden space-y-6">
         <h2 class="text-2xl font-bold text-white">Custom Export & Laporan K3</h2>
         <div class="glass-card p-5 rounded-xl space-y-4 max-w-lg">
@@ -575,7 +628,7 @@
       <i class="fa-solid fa-user-injured text-base"></i>
       <span>Insiden</span>
     </button>
-    <button onclick="openSettingsModal()" class="flex flex-col items-center space-y-1">
+    <button onclick="openSettingsModal()" class="flex flex-col items-center space-y-1" id="mobileSettingsBtn">
       <i class="fa-solid fa-gear text-base"></i>
       <span>Config</span>
     </button>
@@ -583,7 +636,7 @@
 
   <!-- ================= MODALS SECTION ================= -->
 
-  <!-- MODAL SETTINGS -->
+  <!-- MODAL SETTINGS (Hanya untuk Admin) -->
   <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -838,24 +891,118 @@
   <script>
     // --- STATE MANAGEMENT ---
     let GAS_URL = localStorage.getItem('HSE_INIT_GAS_URL') || '';
+    let currentUserRole = sessionStorage.getItem('HSE_USER_ROLE') || '';
+    let currentUserName = sessionStorage.getItem('HSE_USER_NAME') || '';
     
     let sampleHIRADC = [];
     let samplePTW = [];
 
     // --- INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
+      checkAuthStatus();
       initCharts();
       renderHiradcTable();
       renderPtwCards();
-      renderSampleData();
-      checkBackendConfig();
       registerServiceWorkerAndPWA();
-      updateReportInput(); // Inisialisasi input laporan
-      
-      if (GAS_URL) {
-        syncAllData();
-      }
+      updateReportInput();
     });
+
+    // --- AUTHENTICATION & LOGIN LOGIC ---
+    function switchLoginTab(role) {
+      const userBtn = document.getElementById('tabUserBtn');
+      const adminBtn = document.getElementById('tabAdminBtn');
+      const userForm = document.getElementById('userLoginForm');
+      const adminForm = document.getElementById('adminLoginForm');
+
+      if (role === 'user') {
+        userBtn.className = "py-2.5 rounded-lg bg-emerald-600 text-white transition";
+        adminBtn.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
+        userForm.classList.remove('hidden');
+        adminForm.classList.add('hidden');
+      } else {
+        adminBtn.className = "py-2.5 rounded-lg bg-blue-600 text-white transition";
+        userBtn.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
+        adminForm.classList.remove('hidden');
+        userForm.classList.add('hidden');
+      }
+    }
+
+    function handleUserLogin(e) {
+      e.preventDefault();
+      const name = document.getElementById('userNameInput').value.trim();
+      const dept = document.getElementById('userDeptInput').value.trim();
+      
+      if (!name || !dept) return;
+
+      currentUserRole = 'user';
+      currentUserName = `${name} (${dept})`;
+      sessionStorage.setItem('HSE_USER_ROLE', currentUserRole);
+      sessionStorage.setItem('HSE_USER_NAME', currentUserName);
+
+      checkAuthStatus();
+    }
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      const pin = document.getElementById('adminPasswordInput').value.trim();
+      
+      // PIN Admin Default (Dapat Anda ubah sesuai kebutuhan)
+      if (pin === 'HSEgo123') {
+        currentUserRole = 'admin';
+        currentUserName = 'Administrator';
+        sessionStorage.setItem('HSE_USER_ROLE', currentUserRole);
+        sessionStorage.setItem('HSE_USER_NAME', currentUserName);
+        checkAuthStatus();
+      } else {
+        alert('PIN Admin Salah! Gunakan default: admin123');
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem('HSE_USER_ROLE');
+      sessionStorage.removeItem('HSE_USER_NAME');
+      currentUserRole = '';
+      currentUserName = '';
+      document.getElementById('loginOverlay').classList.remove('hidden');
+    }
+
+    function checkAuthStatus() {
+      const overlay = document.getElementById('loginOverlay');
+      const adminBtn = document.getElementById('adminSettingsBtn');
+      const roleBadge = document.getElementById('userRoleBadge');
+      const nameLabel = document.getElementById('loggedInNameLabel');
+
+      if (!currentUserRole) {
+        overlay.classList.remove('hidden');
+        return;
+      }
+
+      overlay.classList.add('hidden');
+      nameLabel.innerText = currentUserName;
+
+      if (currentUserRole === 'admin') {
+        roleBadge.innerText = "Administrator Mode";
+        roleBadge.className = "text-[10px] text-blue-400 font-medium";
+        adminBtn.classList.remove('hidden'); // Admin dapat melihat tombol setting GAS URL
+        
+        // Jika admin belum mengisi URL GAS, otomatis buka modal setting
+        if (!GAS_URL) {
+          openSettingsModal();
+        } else {
+          syncAllData();
+        }
+      } else {
+        roleBadge.innerText = "User / Staff Mode";
+        roleBadge.className = "text-[10px] text-emerald-400 font-medium";
+        adminBtn.classList.add('hidden'); // User TIDAK DAPAT melihat tombol setting GAS URL
+
+        if (!GAS_URL) {
+          alert("Perhatian: Alamat Google Apps Script (GAS) belum dikonfigurasi oleh Administrator. Harap hubungi Admin.");
+        } else {
+          syncAllData();
+        }
+      }
+    }
 
     // --- TAB SWITCHING ---
     function switchTab(tabId) {
@@ -969,10 +1116,12 @@
       `).join('');
     }
 
-    function renderSampleData() {}
-
-    // --- CONFIG & BACKEND CONNECTIVITY ---
+    // --- CONFIG & BACKEND CONNECTIVITY (ADMIN ONLY) ---
     function openSettingsModal() {
+      if (currentUserRole !== 'admin') {
+        alert("Akses ditolak! Hanya Administrator yang dapat mengubah alamat GAS.");
+        return;
+      }
       document.getElementById('gasUrlInput').value = GAS_URL;
       document.getElementById('settingsModal').classList.remove('hidden');
     }
@@ -980,19 +1129,12 @@
       document.getElementById('settingsModal').classList.add('hidden');
     }
     function saveGasUrl() {
+      if (currentUserRole !== 'admin') return;
       GAS_URL = document.getElementById('gasUrlInput').value.trim();
       localStorage.setItem('HSE_INIT_GAS_URL', GAS_URL);
       closeSettingsModal();
-      checkBackendConfig();
+      checkAuthStatus();
       syncAllData();
-    }
-    function checkBackendConfig() {
-      const statusText = document.getElementById('backendStatusText');
-      if (GAS_URL) {
-        statusText.innerText = "GAS Connected";
-      } else {
-        statusText.innerText = "Demo Mode (Configure API)";
-      }
     }
 
     // --- DYNAMIC REPORT INPUT ADAPTER ---
@@ -1048,7 +1190,7 @@
           alert("Gagal mengambil data dari server backend.");
         }
       } else {
-        alert("URL GAS belum terkonfigurasi. Silakan atur melalui menu Pengaturan (ikon Roda Gigi).");
+        alert("URL GAS belum terkonfigurasi.");
       }
     }
 
@@ -1088,6 +1230,11 @@
         payloadData[key] = value;
       });
 
+      // Jika user yang menginput, tambahkan info pembuat/user yang login jika diperlukan
+      if (currentUserRole === 'user') {
+        payloadData.Logged_User = currentUserName;
+      }
+
       const submitBtn = event.target.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerText;
       submitBtn.innerText = "Menyimpan...";
@@ -1104,7 +1251,7 @@
         formEl.reset();
         syncAllData();
       } else {
-        alert("Gagal menyimpan ke Google Sheets. Pastikan URL GAS dan izin akses 'Anyone' sudah benar.");
+        alert("Gagal menyimpan ke Google Sheets. Pastikan URL GAS benar.");
       }
     }
 
