@@ -489,9 +489,17 @@
 
     async function handleDynamicLogin(e) {
       e.preventDefault();
-      const username = document.getElementById('loginUsername').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
+      const usernameInput = document.getElementById('loginUsername');
+      const passwordInput = document.getElementById('loginPassword');
+      
+      const username = usernameInput ? usernameInput.value.trim() : '';
+      const password = passwordInput ? passwordInput.value.trim() : '';
       const loginBtn = document.getElementById('loginBtn');
+
+      if (!username || !password) {
+        alert("Harap isi Username dan Password!");
+        return;
+      }
 
       if (!GAS_URL) {
         alert("Alamat API Google Apps Script (GAS) belum diset! Harap konfigurasikan terlebih dahulu via Admin.");
@@ -501,14 +509,14 @@
       loginBtn.innerText = "Memverifikasi...";
       loginBtn.disabled = true;
 
-      const response = await callGasBackend('loginUser', { username, password });
+      const response = await callGasBackend('loginUser', { username: username, password: password });
       
       loginBtn.innerText = "Masuk ke Aplikasi";
       loginBtn.disabled = false;
 
-      if (response && response.status === 'success') {
-        currentUserRole = response.user.role;
-        currentUserName = `${response.user.name} (${response.user.department})`;
+      if (response && response.status === 'success' && response.user) {
+        currentUserRole = response.user.role || 'user';
+        currentUserName = `${response.user.name || 'User'} (${response.user.department || 'General'})`;
         sessionStorage.setItem('HSE_USER_ROLE', currentUserRole);
         sessionStorage.setItem('HSE_USER_NAME', currentUserName);
         checkAuthStatus();
@@ -536,13 +544,13 @@
         roleBadge.innerText = "Administrator Mode";
         roleBadge.className = "text-[10px] text-purple-400 font-medium";
         adminBtn.classList.remove('hidden');
-        navUserMgmt.classList.remove('hidden'); // Tampilkan modul User Management
+        if (navUserMgmt) navUserMgmt.classList.remove('hidden');
         fetchUsersList();
       } else {
         roleBadge.innerText = "User Mode";
         roleBadge.className = "text-[10px] text-emerald-400 font-medium";
         adminBtn.classList.add('hidden');
-        navUserMgmt.classList.add('hidden');
+        if (navUserMgmt) navUserMgmt.classList.add('hidden');
       }
       syncAllData();
     }
@@ -559,16 +567,18 @@
         const response = await callGasBackend('getUsersList');
         if (response && response.status === 'success') {
           const tbody = document.getElementById('usersTableBody');
-          tbody.innerHTML = response.users.map(u => `
-            <tr class="hover:bg-slate-900/50">
-              <td class="p-3 font-mono text-purple-400 font-semibold">${u.id}</td>
-              <td class="p-3 text-white font-medium">${u.name}</td>
-              <td class="p-3">${u.username}</td>
-              <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-400' : 'bg-emerald-500/20 text-emerald-400'}">${u.role.toUpperCase()}</span></td>
-              <td class="p-3">${u.department}</td>
-              <td class="p-3"><span class="text-emerald-400">${u.status}</span></td>
-            </tr>
-          `).join('');
+          if (tbody) {
+            tbody.innerHTML = response.users.map(u => `
+              <tr class="hover:bg-slate-900/50">
+                <td class="p-3 font-mono text-purple-400 font-semibold">${u.id}</td>
+                <td class="p-3 text-white font-medium">${u.name}</td>
+                <td class="p-3">${u.username}</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-400' : 'bg-emerald-500/20 text-emerald-400'}">${u.role.toUpperCase()}</span></td>
+                <td class="p-3">${u.department}</td>
+                <td class="p-3"><span class="text-emerald-400">${u.status}</span></td>
+              </tr>
+            `).join('');
+          }
         }
       }
     }
@@ -580,8 +590,6 @@
       const payloadData = {};
       
       let fileInput = formEl.querySelector('input[type="file"]');
-      let fileObj = null;
-
       if (fileInput && fileInput.files.length > 0) {
         const file = fileInput.files[0];
         const base64 = await convertFileToBase64(file);
