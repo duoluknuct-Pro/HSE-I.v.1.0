@@ -551,6 +551,61 @@
     </div>
   </div>
 
+  <!-- MODAL TAMBAH HIRADC -->
+  <div id="hiradcModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white text-base flex items-center space-x-2">
+          <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+          <span>Tambah Data HIRADC Baru</span>
+        </h3>
+        <button onclick="closeHiradcModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="hiradcForm" onsubmit="submitHiradc(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-300 mb-1">Risk ID</label>
+          <input type="text" id="h_id" value="RKS-003" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">Aktivitas Kerja</label>
+          <input type="text" id="h_activity" placeholder="Contoh: Perbaikan Instalasi Listrik" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">Bahaya (Hazard)</label>
+          <input type="text" id="h_hazard" placeholder="Contoh: Tersengat arus listrik" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">Initial Risk</label>
+          <select id="h_initial" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="LOW">LOW</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">Pengendalian (Control Measure)</label>
+          <input type="text" id="h_control" placeholder="Contoh: Gunakan APD Tegangan Tinggi & LOTO" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">Residual Risk</label>
+          <select id="h_residual" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+            <option value="LOW">LOW</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="HIGH">HIGH</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">Penanggung Jawab (Owner)</label>
+          <input type="text" id="h_owner" placeholder="Nama Petugas / Supervisor" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+        </div>
+        <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
+          <button type="button" onclick="closeHiradcModal()" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
+          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white">Simpan ke GAS</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer class="w-full bg-slate-950 border-t border-slate-900 py-3 px-4 text-center text-xs text-slate-500 z-10">
     HSE-Init Digital Management System | Created by UQ
@@ -582,25 +637,20 @@
       registerServiceWorkerAndPWA();
     });
 
-    // --- TAB SWITCHING (FIXED & GLOBAL) ---
+    // --- TAB SWITCHING ---
     function switchTab(tabId) {
-      // Sembunyikan semua tab content
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      
-      // Hapus kelas aktif dari semua nav-item desktop
       document.querySelectorAll('.nav-item').forEach(el => {
         el.classList.remove('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
         el.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/50');
       });
       
-      // Tampilkan tab yang dipilih
       const selectedTab = document.getElementById(`tab-${tabId}`);
       if (selectedTab) {
         selectedTab.classList.remove('hidden');
       }
       
-      // Beri style aktif pada menu navigasi yang sesuai
-      const activeNavBtn = document.querySelector(`.nav-item[onclick*="${tabId}"]`);
+      const activeNavBtn = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
       if (activeNavBtn) {
         activeNavBtn.classList.add('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
         activeNavBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/50');
@@ -737,16 +787,76 @@
       }
     }
 
+    // --- INPUT MODAL CONTROLLER & DATA SUBMISSION ---
+    function openHiradcModal() {
+      document.getElementById('hiradcModal').classList.remove('hidden');
+    }
+    function closeHiradcModal() {
+      document.getElementById('hiradcModal').classList.add('hidden');
+    }
+
+    async function submitHiradc(event) {
+      event.preventDefault();
+      
+      const payloadData = {
+        Risk_ID: document.getElementById('h_id').value,
+        Activity: document.getElementById('h_activity').value,
+        Hazard: document.getElementById('h_hazard').value,
+        Initial_Risk: document.getElementById('h_initial').value,
+        Control_Measure: document.getElementById('h_control').value,
+        Residual_Risk: document.getElementById('h_residual').value,
+        Owner: document.getElementById('h_owner').value
+      };
+
+      const submitBtn = event.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerText;
+      submitBtn.innerText = "Menyimpan...";
+      submitBtn.disabled = true;
+
+      // Tambahkan data ke tabel lokal untuk tampilan cepat
+      sampleHIRADC.push({
+        id: payloadData.Risk_ID,
+        activity: payloadData.Activity,
+        hazard: payloadData.Hazard,
+        initialRisk: payloadData.Initial_Risk,
+        control: payloadData.Control_Measure,
+        residualRisk: payloadData.Residual_Risk
+      });
+      renderHiradcTable();
+
+      // Kirim data ke Google Apps Script backend
+      const response = await callGasBackend('addHiradc', { data: payloadData });
+      
+      submitBtn.innerText = originalText;
+      submitBtn.disabled = false;
+
+      if (response && response.status === 'success') {
+        alert("Data HIRADC berhasil disimpan ke Google Sheets!");
+        closeHiradcModal();
+        document.getElementById('hiradcForm').reset();
+        syncAllData();
+      } else {
+        alert("Data ditampilkan secara lokal. Jika ingin tersimpan di Google Sheets, pastikan GAS Web App URL terkonfigurasi dengan hak akses 'Anyone'.");
+        closeHiradcModal();
+      }
+    }
+
+    function openPtwModal() {
+      alert("Form pengajuan PTW dapat dihubungkan dengan cara yang sama seperti modul HIRADC.");
+    }
+    function openIncidentModal() {
+      alert("Form pelaporan insiden dapat dihubungkan dengan cara yang sama.");
+    }
+
     // --- BACKEND API COMMUNICATOR ---
     async function callGasBackend(action, payload = {}) {
       if (!GAS_URL) {
-        alert("Silakan konfigurasikan Google Apps Script Web App URL terlebih dahulu pada tombol Settings (Ikon Roda Gigi).");
         return null;
       }
       try {
         const response = await fetch(GAS_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain' }, // CORS compliance for GAS
+          headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ action, ...payload })
         });
         return await response.json();
@@ -773,7 +883,6 @@
 
     // --- PWA SERVICE WORKER & DYNAMIC MANIFEST REGISTRATION ---
     function registerServiceWorkerAndPWA() {
-      // Dynamic Manifest Creation via Blob
       const manifestObj = {
         name: "HSE-Init Digital Management System",
         short_name: "HSE-Init",
@@ -794,7 +903,6 @@
       link.href = manifestUrl;
       document.head.appendChild(link);
 
-      // Register SW
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW Registration Fail:', err));
       }
