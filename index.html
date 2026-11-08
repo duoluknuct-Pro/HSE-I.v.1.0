@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HSE-Init | Digital HSE Management System</title>
   
-  <!-- PWA Theme Meta -->
   <meta name="theme-color" content="#0f172a">
   <meta name="description" content="Digital HSE/K3 Management System Platform">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1160/1160358.png">
@@ -34,26 +33,13 @@
 
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0f172a;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #475569;
-    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
     .glass-card {
       background: rgba(30, 41, 59, 0.7);
       backdrop-filter: blur(12px);
@@ -63,47 +49,28 @@
 </head>
 <body class="h-full flex flex-col font-sans antialiased text-slate-200 bg-slate-950 overflow-x-hidden">
 
-  <!-- LOGIN / ROLE SELECTION OVERLAY -->
+  <!-- LOGIN OVERLAY -->
   <div id="loginOverlay" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-6 shadow-2xl">
       <div class="text-center space-y-2">
         <div class="inline-flex h-12 w-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 items-center justify-center text-emerald-400 text-xl font-bold">
           <i class="fa-solid fa-shield-halved"></i>
         </div>
-        <h2 class="text-xl font-bold text-white">Selamat Datang di HSE-Init</h2>
-        <p class="text-xs text-slate-400">Silakan pilih akses login untuk melanjutkan ke sistem.</p>
+        <h2 class="text-xl font-bold text-white">Login HSE-Init Platform</h2>
+        <p class="text-xs text-slate-400">Masukkan Username dan Password akun Anda</p>
       </div>
 
-      <!-- Tab Selector for Login -->
-      <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
-        <button type="button" onclick="switchLoginTab('user')" id="tabUserBtn" class="py-2.5 rounded-lg bg-emerald-600 text-white transition">Login User</button>
-        <button type="button" onclick="switchLoginTab('admin')" id="tabAdminBtn" class="py-2.5 rounded-lg text-slate-400 hover:text-white transition">Login Admin</button>
-      </div>
-
-      <!-- Form User -->
-      <form id="userLoginForm" onsubmit="handleUserLogin(event)" class="space-y-4 text-xs">
+      <form id="dynamicLoginForm" onsubmit="handleDynamicLogin(event)" class="space-y-4 text-xs">
         <div>
-          <label class="block text-slate-300 mb-1">Nama Lengkap Anda</label>
-          <input type="text" id="userNameInput" placeholder="Contoh: Budi Santoso" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none">
+          <label class="block text-slate-300 mb-1">Username</label>
+          <input type="text" id="loginUsername" placeholder="Username akun" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none">
         </div>
         <div>
-          <label class="block text-slate-300 mb-1">Departemen / Bagian</label>
-          <input type="text" id="userDeptInput" placeholder="Contoh: Maintenance / Produksi" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none">
+          <label class="block text-slate-300 mb-1">Password</label>
+          <input type="password" id="loginPassword" placeholder="Password akun" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none">
         </div>
-        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-3 rounded-lg transition shadow-lg shadow-emerald-900/30">
-          Masuk sebagai User
-        </button>
-      </form>
-
-      <!-- Form Admin -->
-      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-4 text-xs hidden">
-        <div>
-          <label class="block text-slate-300 mb-1">Password / PIN Admin</label>
-          <input type="password" id="adminPasswordInput" placeholder="Masukkan PIN admin (default: PIN dari Admin)" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none">
-          <p class="text-[10px] text-slate-500 mt-1">Default PIN: <code class="text-emerald-400">Hubungi Admin</code></p>
-        </div>
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold p-3 rounded-lg transition shadow-lg shadow-blue-900/30">
-          Masuk sebagai Admin (Full Control)
+        <button type="submit" id="loginBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-3 rounded-lg transition shadow-lg shadow-emerald-900/30">
+          Masuk ke Aplikasi
         </button>
       </form>
     </div>
@@ -133,20 +100,15 @@
         <span id="backendStatusText">GAS Connected</span>
       </div>
 
-      <!-- TOMBOL SETTINGS (Hanya Muncul Jika Login sebagai Admin) -->
+      <!-- TOMBOL SETTINGS (Admin Only) -->
       <button id="adminSettingsBtn" onclick="openSettingsModal()" class="hidden p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition" title="Konfigurasi API Backend">
         <i class="fa-solid fa-gear text-lg"></i>
       </button>
 
-      <!-- Tombol Logout / Ganti Akun -->
-      <button onclick="handleLogout()" class="p-2 text-rose-400 hover:bg-rose-500/10 rounded-lg transition text-xs flex items-center space-x-1" title="Keluar / Ganti Akun">
+      <!-- Tombol Logout -->
+      <button onclick="handleLogout()" class="p-2 text-rose-400 hover:bg-rose-500/10 rounded-lg transition text-xs flex items-center space-x-1" title="Keluar">
         <i class="fa-solid fa-right-from-bracket"></i>
         <span class="hidden sm:inline" id="loggedInNameLabel">Keluar</span>
-      </button>
-
-      <button id="pwaInstallBtn" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg font-semibold flex items-center space-x-1.5 shadow-lg shadow-emerald-900/30 transition">
-        <i class="fa-solid fa-download"></i>
-        <span>Install App</span>
       </button>
     </div>
   </header>
@@ -163,6 +125,12 @@
           <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-item active w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-emerald-400 bg-slate-800/80 border border-slate-700/50">
             <i class="fa-solid fa-chart-pie w-5 text-center"></i>
             <span>Dashboard</span>
+          </button>
+
+          <!-- MODUL KHUSUS ADMIN: USER MANAGEMENT -->
+          <button id="navUserMgmt" onclick="switchTab('usermgmt')" data-tab="usermgmt" class="nav-item hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+            <i class="fa-solid fa-users-gear w-5 text-center text-purple-400"></i>
+            <span>User Management</span>
           </button>
           
           <button onclick="switchTab('hiradc')" data-tab="hiradc" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
@@ -221,20 +189,12 @@
           </button>
         </nav>
       </div>
-
-      <!-- Quick System Info -->
-      <div class="p-3 border-t border-slate-800 text-xs text-slate-400">
-        <div class="flex items-center justify-between">
-          <span>GAS Connectivity</span>
-          <span class="text-emerald-400 font-mono text-[11px]">Ready</span>
-        </div>
-      </div>
     </aside>
 
     <!-- CONTENT DISPLAY AREA -->
     <main class="flex-1 overflow-y-auto p-4 md:p-6 pb-24 md:pb-8 bg-slate-950">
       
-      <!-- DYNAMIC TAB 1: EXECUTIVE DASHBOARD -->
+      <!-- DASHBOARD TAB -->
       <section id="tab-dashboard" class="tab-content space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -247,310 +207,115 @@
           </button>
         </div>
 
-        <!-- KPI Cards Grid -->
         <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
           <div class="glass-card p-4 rounded-xl border-l-4 border-l-emerald-500">
-            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>PTW Aktif</span>
-              <i class="fa-solid fa-file-signature text-emerald-400"></i>
-            </div>
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium"><span>PTW Aktif</span><i class="fa-solid fa-file-signature text-emerald-400"></i></div>
             <div class="text-2xl font-bold text-white mt-2" id="kpi-ptw">0</div>
-            <span class="text-[10px] text-emerald-400">Permit Terverifikasi</span>
           </div>
-
           <div class="glass-card p-4 rounded-xl border-l-4 border-l-rose-500">
-            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>High Risk HIRADC</span>
-              <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
-            </div>
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium"><span>High Risk HIRADC</span><i class="fa-solid fa-triangle-exclamation text-rose-400"></i></div>
             <div class="text-2xl font-bold text-white mt-2" id="kpi-hiradc">0</div>
-            <span class="text-[10px] text-rose-400">Mitigasi Diperlukan</span>
           </div>
-
           <div class="glass-card p-4 rounded-xl border-l-4 border-l-amber-500">
-            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>Total Insiden YTD</span>
-              <i class="fa-solid fa-user-injured text-amber-400"></i>
-            </div>
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium"><span>Total Insiden</span><i class="fa-solid fa-user-injured text-amber-400"></i></div>
             <div class="text-2xl font-bold text-white mt-2" id="kpi-incidents">0</div>
-            <span class="text-[10px] text-amber-400">0 Fatality</span>
           </div>
-
           <div class="glass-card p-4 rounded-xl border-l-4 border-l-blue-500">
-            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>Compliance Rate</span>
-              <i class="fa-solid fa-shield-check text-blue-400"></i>
-            </div>
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium"><span>Compliance Rate</span><i class="fa-solid fa-shield-check text-blue-400"></i></div>
             <div class="text-2xl font-bold text-white mt-2" id="kpi-compliance">100%</div>
-            <span class="text-[10px] text-blue-400">Standard ISO 45001</span>
           </div>
-
           <div class="glass-card p-4 rounded-xl border-l-4 border-l-orange-500 col-span-2 lg:col-span-1">
-            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
-              <span>CAPA Pending</span>
-              <i class="fa-solid fa-list-check text-orange-400"></i>
-            </div>
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium"><span>CAPA Pending</span><i class="fa-solid fa-list-check text-orange-400"></i></div>
             <div class="text-2xl font-bold text-white mt-2" id="kpi-capa">0</div>
-            <span class="text-[10px] text-orange-400">Memerlukan Action</span>
           </div>
         </div>
 
-        <!-- Charts Section -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="glass-card p-5 rounded-xl lg:col-span-2">
-            <h3 class="text-base font-semibold text-white mb-4 flex items-center space-x-2">
-              <i class="fa-solid fa-chart-line text-emerald-400"></i>
-              <span>Tren Insiden & Safety Observation (6 Bulan)</span>
-            </h3>
-            <div class="h-64">
-              <canvas id="incidentTrendChart"></canvas>
-            </div>
+            <h3 class="text-base font-semibold text-white mb-4">Tren Insiden & Safety Observation</h3>
+            <div class="h-64"><canvas id="incidentTrendChart"></canvas></div>
           </div>
-
           <div class="glass-card p-5 rounded-xl">
-            <h3 class="text-base font-semibold text-white mb-4 flex items-center space-x-2">
-              <i class="fa-solid fa-chart-pie text-purple-400"></i>
-              <span>Distribusi Rating Risiko HIRADC</span>
-            </h3>
-            <div class="h-64 flex items-center justify-center">
-              <canvas id="riskDistributionChart"></canvas>
-            </div>
+            <h3 class="text-base font-semibold text-white mb-4">Distribusi Risk Rating</h3>
+            <div class="h-64 flex items-center justify-center"><canvas id="riskDistributionChart"></canvas></div>
           </div>
         </div>
       </section>
 
-      <!-- DYNAMIC TAB 2: HIRADC MANAGEMENT -->
-      <section id="tab-hiradc" class="tab-content hidden space-y-6">
+      <!-- TAB MODUL ADMIN: USER MANAGEMENT -->
+      <section id="tab-usermgmt" class="tab-content hidden space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h2 class="text-2xl font-bold text-white">HIRADC Risk Matrix</h2>
-            <p class="text-sm text-slate-400">Hazard Identification, Risk Assessment, and Risk Control</p>
+            <h2 class="text-2xl font-bold text-white">User Access & Registration</h2>
+            <p class="text-sm text-slate-400">Kelola pendaftaran akun dan hak akses penggguna aplikasi</p>
           </div>
-          <button onclick="openHiradcModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 shadow-lg shadow-emerald-900/30 transition">
-            <i class="fa-solid fa-plus"></i>
-            <span>Tambah HIRADC Baru</span>
+          <button onclick="openUserModal()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 shadow-lg shadow-purple-900/30 transition">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Daftarkan User Baru</span>
           </button>
         </div>
 
         <div class="glass-card rounded-xl overflow-hidden">
-          <div class="p-4 border-b border-slate-800 flex flex-col sm:flex-row gap-3 justify-between">
-            <input type="text" id="searchHiradc" placeholder="Cari aktivitas / bahaya..." class="bg-slate-900 border border-slate-700 text-white text-xs rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:border-emerald-500">
-          </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-900/90 text-slate-400 font-semibold uppercase tracking-wider">
+              <thead class="bg-slate-900/90 text-slate-400 font-semibold uppercase">
                 <tr>
-                  <th class="p-3">Risk ID</th>
-                  <th class="p-3">Aktivitas Kerja</th>
-                  <th class="p-3">Bahaya (Hazard)</th>
-                  <th class="p-3">Initial Risk</th>
-                  <th class="p-3">Pengendalian (Control)</th>
-                  <th class="p-3">Residual Risk</th>
-                  <th class="p-3 text-right">Aksi</th>
+                  <th class="p-3">User ID</th>
+                  <th class="p-3">Nama Lengkap</th>
+                  <th class="p-3">Username</th>
+                  <th class="p-3">Role</th>
+                  <th class="p-3">Departemen</th>
+                  <th class="p-3">Status</th>
                 </tr>
               </thead>
-              <tbody id="hiradcTableBody" class="divide-y divide-slate-800">
-                <tr><td colspan="7" class="p-4 text-center text-slate-500">Belum ada data HIRADC di spreadsheet.</td></tr>
+              <tbody id="usersTableBody" class="divide-y divide-slate-800">
+                <tr><td colspan="6" class="p-4 text-center text-slate-500">Klik "Daftarkan User Baru" untuk menambahkan pengguna.</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- DYNAMIC TAB 3: DIGITAL PTW -->
-      <section id="tab-ptw" class="tab-content hidden space-y-6">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 class="text-2xl font-bold text-white">Izin Kerja Digital (PTW)</h2>
-            <p class="text-sm text-slate-400">Permit to Work Approval System</p>
-          </div>
-          <button onclick="openPtwModal()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition">
-            <i class="fa-solid fa-file-circle-plus"></i>
-            <span>Ajukan PTW Baru</span>
-          </button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="ptwCardsContainer">
-          <div class="glass-card p-4 rounded-xl text-center text-slate-500 col-span-full">Belum ada data PTW di spreadsheet.</div>
-        </div>
-      </section>
-
-      <!-- DYNAMIC TAB 4: INCIDENTS -->
+      <!-- TAB INCIDENTS & NEAR MISS (WITH UPLOAD FILE) -->
       <section id="tab-incidents" class="tab-content hidden space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h2 class="text-2xl font-bold text-white">Pelaporan Insiden & Near Miss</h2>
-            <p class="text-sm text-slate-400">Safety Incident & Danger Observation Log</p>
+            <p class="text-sm text-slate-400">Log Kejadian & Pengunggahan Berkas Bukti Foto/Dokumen</p>
           </div>
           <button onclick="openIncidentModal()" class="bg-rose-600 hover:bg-rose-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition">
             <i class="fa-solid fa-bullhorn"></i>
             <span>Laporkan Kejadian</span>
           </button>
         </div>
-
-        <div class="glass-card rounded-xl overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-900/90 text-slate-400 uppercase">
-                <tr>
-                  <th class="p-3">ID Log</th>
-                  <th class="p-3">Tanggal</th>
-                  <th class="p-3">Kategori</th>
-                  <th class="p-3">Lokasi</th>
-                  <th class="p-3">Tingkat Keparahan</th>
-                  <th class="p-3">Status Investigation</th>
-                </tr>
-              </thead>
-              <tbody id="incidentTableBody" class="divide-y divide-slate-800">
-                <tr><td colspan="6" class="p-4 text-center text-slate-500">Belum ada data insiden.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- DYNAMIC TAB 5: INSPECTIONS -->
-      <section id="tab-inspections" class="tab-content hidden space-y-6">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 class="text-2xl font-bold text-white">Audit & Inspeksi Digital</h2>
-            <p class="text-sm text-slate-400">Safety Checklist & Audit Field Report</p>
-          </div>
-          <button onclick="openInspectionModal()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition">
-            <i class="fa-solid fa-clipboard-check"></i>
-            <span>Tambah Audit Baru</span>
-          </button>
-        </div>
-        <div class="glass-card p-5 rounded-xl max-w-2xl">
-          <h3 class="text-base font-bold text-emerald-400 mb-3">Informasi Ringkas Audit</h3>
-          <p class="text-xs text-slate-400">Gunakan tombol "Tambah Audit Baru" di atas untuk memasukkan data inspeksi lengkap langsung ke spreadsheet database.</p>
-        </div>
-      </section>
-
-      <!-- DYNAMIC TAB 6: SIA / SIO CERTIFICATION -->
-      <section id="tab-sio" class="tab-content hidden space-y-6">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 class="text-2xl font-bold text-white">SIA / SIO & Sertifikasi Worker</h2>
-            <p class="text-sm text-slate-400">License & Worker Certification Management</p>
-          </div>
-          <button onclick="openSioModal()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition">
-            <i class="fa-solid fa-id-card"></i>
-            <span>Tambah Sertifikasi</span>
-          </button>
-        </div>
         <div class="glass-card rounded-xl p-4">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-900/90 text-slate-400 uppercase">
-                <tr>
-                  <th class="p-3">Nama Pemegang</th>
-                  <th class="p-3">Tipe Sertifikat</th>
-                  <th class="p-3">No. Lisensi</th>
-                  <th class="p-3">Masa Berlaku</th>
-                  <th class="p-3">Status</th>
-                </tr>
-              </thead>
-              <tbody id="sioTableBody" class="divide-y divide-slate-800">
-                <tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada data sertifikasi.</td></tr>
-              </tbody>
-            </table>
-          </div>
+          <p class="text-xs text-slate-400">Data pelaporan insiden beserta berkas pendukung akan otomatis diunggah ke Google Drive di folder tahun/bulan terkait.</p>
         </div>
       </section>
 
-      <!-- DYNAMIC TAB 7: CSMS -->
-      <section id="tab-csms" class="tab-content hidden space-y-6">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 class="text-2xl font-bold text-white">Contractor Safety Management System (CSMS)</h2>
-            <p class="text-sm text-slate-400">Vendor & Contractor Evaluation</p>
-          </div>
-          <button onclick="openCsmsModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition">
-            <i class="fa-solid fa-building-user"></i>
-            <span>Tambah CSMS Vendor</span>
-          </button>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="csmsContainer">
-          <div class="glass-card p-4 rounded-xl text-center text-slate-500 col-span-full">Belum ada data CSMS vendor.</div>
-        </div>
-      </section>
-
-      <!-- DYNAMIC TAB 8: LEGAL COMPLIANCE -->
+      <!-- TAB LEGAL COMPLIANCE (WITH UPLOAD FILE) -->
       <section id="tab-legal" class="tab-content hidden space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h2 class="text-2xl font-bold text-white">Legal & Compliance Center</h2>
-            <p class="text-sm text-slate-400">Matriks Regulasi K3 & Undang-Undang</p>
+            <p class="text-sm text-slate-400">Matriks Regulasi & Unggah Sertifikat Compliance</p>
           </div>
           <button onclick="openLegalModal()" class="bg-amber-600 hover:bg-amber-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition">
             <i class="fa-solid fa-scale-balanced"></i>
-            <span>Tambah Regulasi</span>
+            <span>Tambah Regulasi & Dokumen</span>
           </button>
         </div>
         <div class="glass-card rounded-xl p-4">
-          <div class="space-y-2 text-xs" id="legalContainer">
-            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800 text-center text-slate-500">
-              Belum ada data legal compliance tersimpan.
-            </div>
-          </div>
+          <p class="text-xs text-slate-400">Setiap bukti dokumen regulasi otomatis tersimpan ke subfolder drive tersinkronisasi.</p>
         </div>
       </section>
 
-      <!-- DYNAMIC TAB 9: TRAINING & TBM -->
-      <section id="tab-training" class="tab-content hidden space-y-6">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 class="text-2xl font-bold text-white">HSE Training & Toolbox Meeting</h2>
-            <p class="text-sm text-slate-400">Jadwal TBM dan Pelatihan Safety</p>
-          </div>
-          <button onclick="openTrainingModal()" class="bg-sky-600 hover:bg-sky-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition">
-            <i class="fa-solid fa-people-group"></i>
-            <span>Tambah Jadwal Training</span>
-          </button>
-        </div>
-        <div class="glass-card p-5 rounded-xl">
-          <p class="text-xs text-slate-500 text-center">Belum ada jadwal training atau TBM.</p>
-        </div>
-      </section>
-
-      <!-- DYNAMIC TAB 10: INVENTORY APD -->
-      <section id="tab-inventory" class="tab-content hidden space-y-6">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 class="text-2xl font-bold text-white">Inventory & APD Stock</h2>
-            <p class="text-sm text-slate-400">Stock Gudang Alat Pelindung Diri</p>
-          </div>
-          <button onclick="openInventoryModal()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition">
-            <i class="fa-solid fa-boxes-packing"></i>
-            <span>Tambah Item APD</span>
-          </button>
-        </div>
-        <div class="glass-card rounded-xl p-4">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-900/90 text-slate-400 uppercase">
-                <tr>
-                  <th class="p-3">Nama Alat / APD</th>
-                  <th class="p-3">Stok Saat Ini</th>
-                  <th class="p-3">Minimum Stock</th>
-                  <th class="p-3">Status APD</th>
-                </tr>
-              </thead>
-              <tbody id="inventoryTableBody" class="divide-y divide-slate-800">
-                <tr><td colspan="4" class="p-4 text-center text-slate-500">Belum ada data inventory APD.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- DYNAMIC TAB 11: CAPA TRACKING -->
+      <!-- TAB CAPA TRACKING (WITH UPLOAD FILE) -->
       <section id="tab-capa" class="tab-content hidden space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h2 class="text-2xl font-bold text-white">CAPA Tracking (Corrective & Preventive Action)</h2>
-            <p class="text-sm text-slate-400">Tindak Lanjut Temuan Audit & Insiden</p>
+            <p class="text-sm text-slate-400">Tindak Lanjut & Berkas Perbaikan</p>
           </div>
           <button onclick="openCapaModal()" class="bg-orange-600 hover:bg-orange-500 text-white text-xs px-4 py-2.5 rounded-lg font-semibold flex items-center space-x-2 transition">
             <i class="fa-solid fa-list-check"></i>
@@ -558,32 +323,17 @@
           </button>
         </div>
         <div class="glass-card rounded-xl p-4">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-900/90 text-slate-400 uppercase">
-                <tr>
-                  <th class="p-3">CAPA ID</th>
-                  <th class="p-3">Deskripsi Temuan</th>
-                  <th class="p-3">Penanggung Jawab</th>
-                  <th class="p-3">Due Date</th>
-                  <th class="p-3">Status</th>
-                </tr>
-              </thead>
-              <tbody id="capaTableBody" class="divide-y divide-slate-800">
-                <tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada data CAPA.</td></tr>
-              </tbody>
-            </table>
-          </div>
+          <p class="text-xs text-slate-400">Unggah bukti verifikasi tindakan perbaikan (CAPA) langsung ke Drive.</p>
         </div>
       </section>
 
-      <!-- DYNAMIC TAB 12: EXPORT & REPORTS -->
+      <!-- EXPORT REPORTS TAB -->
       <section id="tab-reports" class="tab-content hidden space-y-6">
         <h2 class="text-2xl font-bold text-white">Custom Export & Laporan K3</h2>
         <div class="glass-card p-5 rounded-xl space-y-4 max-w-lg">
           <div>
             <label class="block text-xs text-slate-400 mb-1">Tipe Periode Laporan</label>
-            <select id="reportPeriodType" onchange="updateReportInput()" class="bg-slate-900 border border-slate-700 text-white text-xs rounded-lg p-2.5 w-full focus:outline-none focus:border-emerald-500">
+            <select id="reportPeriodType" onchange="updateReportInput()" class="bg-slate-900 border border-slate-700 text-white text-xs rounded-lg p-2.5 w-full">
               <option value="daily">Harian (Daily)</option>
               <option value="monthly" selected>Bulanan (Monthly)</option>
               <option value="yearly">Tahunan (Yearly)</option>
@@ -591,18 +341,11 @@
           </div>
           <div>
             <label class="block text-xs text-slate-400 mb-1" id="reportInputLabel">Pilih Bulan & Tahun</label>
-            <input type="month" id="reportValueInput" class="bg-slate-900 border border-slate-700 text-white text-xs rounded-lg p-2.5 w-full focus:outline-none focus:border-emerald-500">
+            <input type="month" id="reportValueInput" class="bg-slate-900 border border-slate-700 text-white text-xs rounded-lg p-2.5 w-full">
           </div>
-          <div>
-            <label class="block text-xs text-slate-400 mb-1">Format Berkas</label>
-            <select id="reportFormat" class="bg-slate-900 border border-slate-700 text-white text-xs rounded-lg p-2.5 w-full focus:outline-none focus:border-emerald-500">
-              <option value="CSV">CSV / Spreadsheet Data Download</option>
-              <option value="PDF">PDF Summary Report</option>
-            </select>
-          </div>
-          <button onclick="triggerCustomExport()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold text-xs text-white p-3 rounded-lg flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-900/30">
+          <button onclick="triggerCustomExport()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold text-xs text-white p-3 rounded-lg flex items-center justify-center space-x-2 transition">
             <i class="fa-solid fa-file-export"></i>
-            <span>Generate & Download Laporan K3</span>
+            <span>Generate & Download Data CSV</span>
           </button>
         </div>
       </section>
@@ -610,360 +353,168 @@
     </main>
   </div>
 
-  <!-- MOBILE BOTTOM NAVIGATION (PWA Layout) -->
-  <nav class="md:hidden fixed bottom-0 left-0 z-40 w-full glass-card border-t border-slate-800 bg-slate-900/95 px-2 py-2 flex justify-around text-slate-400 text-[10px]">
-    <button onclick="switchTab('dashboard')" class="flex flex-col items-center space-y-1 text-emerald-400">
-      <i class="fa-solid fa-chart-pie text-base"></i>
-      <span>Dashboard</span>
-    </button>
-    <button onclick="switchTab('hiradc')" class="flex flex-col items-center space-y-1">
-      <i class="fa-solid fa-triangle-exclamation text-base"></i>
-      <span>HIRADC</span>
-    </button>
-    <button onclick="switchTab('ptw')" class="flex flex-col items-center space-y-1">
-      <i class="fa-solid fa-file-signature text-base"></i>
-      <span>PTW</span>
-    </button>
-    <button onclick="switchTab('incidents')" class="flex flex-col items-center space-y-1">
-      <i class="fa-solid fa-user-injured text-base"></i>
-      <span>Insiden</span>
-    </button>
-    <button onclick="openSettingsModal()" class="flex flex-col items-center space-y-1" id="mobileSettingsBtn">
-      <i class="fa-solid fa-gear text-base"></i>
-      <span>Config</span>
-    </button>
-  </nav>
+  <!-- MODALS -->
 
-  <!-- ================= MODALS SECTION ================= -->
-
-  <!-- MODAL SETTINGS (Hanya untuk Admin) -->
+  <!-- MODAL SETTINGS (GAS URL) -->
   <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2">
-          <i class="fa-solid fa-sliders text-emerald-400"></i>
-          <span>Pengaturan GAS Web App API</span>
-        </h3>
-        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <p class="text-xs text-slate-400">Masukkan Executed Web App URL Google Apps Script dari spreadsheet Anda.</p>
-      <div>
-        <label class="block text-xs font-semibold text-slate-300 mb-1">GAS Web App URL</label>
-        <input type="url" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none">
-      </div>
+      <h3 class="font-bold text-white text-base">Pengaturan GAS Web App API</h3>
+      <input type="url" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white">
       <div class="flex justify-end space-x-2 pt-2">
-        <button onclick="closeSettingsModal()" class="px-4 py-2 text-xs rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-        <button onclick="saveGasUrl()" class="px-4 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white">Simpan Connection</button>
+        <button onclick="closeSettingsModal()" class="px-4 py-2 text-xs text-slate-400">Batal</button>
+        <button onclick="saveGasUrl()" class="px-4 py-2 text-xs font-bold rounded-lg bg-emerald-600 text-white">Simpan Connection</button>
       </div>
     </div>
   </div>
 
-  <!-- 1. MODAL HIRADC -->
-  <div id="hiradcModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+  <!-- MODAL REGISTER USER BARU (ADMIN ONLY) -->
+  <div id="userModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2"><i class="fa-solid fa-triangle-exclamation text-amber-400"></i><span>Tambah Data HIRADC</span></h3>
-        <button onclick="closeModal('hiradcModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <h3 class="font-bold text-white text-base"><i class="fa-solid fa-user-plus text-purple-400 mr-2"></i>Daftarkan User Baru</h3>
+        <button onclick="closeModal('userModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <form id="hiradcForm" onsubmit="submitForm(event, 'addHiradc', 'hiradcForm', 'hiradcModal')" class="space-y-3 text-xs">
-        <div><label class="block text-slate-300 mb-1">Risk ID</label><input type="text" name="Risk_ID" value="RKS-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Aktivitas Kerja</label><input type="text" name="Activity" placeholder="Contoh: Perbaikan Panel" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Bahaya (Hazard)</label><input type="text" name="Hazard" placeholder="Contoh: Sengatan Listrik" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Initial Risk</label><select name="Initial_Risk" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="HIGH">HIGH</option><option value="MEDIUM">MEDIUM</option><option value="LOW">LOW</option></select></div>
-        <div><label class="block text-slate-300 mb-1">Pengendalian (Control)</label><input type="text" name="Control_Measure" placeholder="Contoh: LOTO" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Residual Risk</label><select name="Residual_Risk" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="LOW">LOW</option><option value="MEDIUM">MEDIUM</option><option value="HIGH">HIGH</option></select></div>
-        <div><label class="block text-slate-300 mb-1">Penanggung Jawab (Owner)</label><input type="text" name="Owner" placeholder="Nama Petugas" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+      <form id="userRegForm" onsubmit="submitFormWithFileUpload(event, 'registerUser', 'userRegForm', 'userModal')" class="space-y-3 text-xs">
+        <div><label class="block text-slate-300 mb-1">Nama Lengkap</label><input type="text" name="Full_Name" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Username Login</label><input type="text" name="Username" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Password</label><input type="password" name="Password" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Role / Peran Akses</label>
+          <select name="Role" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+            <option value="user">User / Worker (Standard Access)</option>
+            <option value="admin">Admin (Full Control Access)</option>
+          </select>
+        </div>
+        <div><label class="block text-slate-300 mb-1">Departemen</label><input type="text" name="Department" placeholder="HSE / Operation / Maintenance" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeModal('hiradcModal')" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white">Simpan ke GAS</button>
+          <button type="button" onclick="closeModal('userModal')" class="px-4 py-2 rounded-lg text-slate-400">Batal</button>
+          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-purple-600 text-white">Simpan User ke Spreadsheet</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 2. MODAL PTW -->
-  <div id="ptwModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2"><i class="fa-solid fa-file-signature text-blue-400"></i><span>Ajukan PTW Baru</span></h3>
-        <button onclick="closeModal('ptwModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <form id="ptwForm" onsubmit="submitForm(event, 'submitPtw', 'ptwForm', 'ptwModal')" class="space-y-3 text-xs">
-        <div><label class="block text-slate-300 mb-1">PTW ID</label><input type="text" name="PTW_ID" value="PTW-2026-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Tipe Kerja (Work Type)</label><input type="text" name="Work_Type" placeholder="Hot Work / Confined Space" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Lokasi</label><input type="text" name="Location" placeholder="Area Boiler Room" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Pemohon (Applicant)</label><input type="text" name="Applicant" placeholder="Nama Pemohon" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Waktu Mulai</label><input type="datetime-local" name="Start_Time" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Waktu Selesai</label><input type="datetime-local" name="End_Time" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Status</label><select name="Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Pending Approval">Pending Approval</option><option value="Approved">Approved</option></select></div>
-        <div><label class="block text-slate-300 mb-1">Email Approver</label><input type="email" name="Approver_Email" placeholder="approver@company.com" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeModal('ptwModal')" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-blue-600 hover:bg-blue-500 text-white">Kirim PTW</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 3. MODAL INCIDENTS -->
+  <!-- MODAL INCIDENTS (WITH FILE UPLOAD) -->
   <div id="incidentModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2"><i class="fa-solid fa-user-injured text-rose-400"></i><span>Laporkan Insiden / Near Miss</span></h3>
-        <button onclick="closeModal('incidentModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <h3 class="font-bold text-white text-base"><i class="fa-solid fa-user-injured text-rose-400 mr-2"></i>Laporkan Insiden / Near Miss</h3>
+        <button onclick="closeModal('incidentModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <form id="incidentForm" onsubmit="submitForm(event, 'addIncident', 'incidentForm', 'incidentModal')" class="space-y-3 text-xs">
+      <form id="incidentForm" onsubmit="submitFormWithFileUpload(event, 'addIncident', 'incidentForm', 'incidentModal')" class="space-y-3 text-xs">
         <div><label class="block text-slate-300 mb-1">Incident ID</label><input type="text" name="Incident_ID" value="INC-2026-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Tanggal Kejadian</label><input type="date" name="Date" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Kategori</label><select name="Category" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Near Miss">Near Miss</option><option value="First Aid">First Aid</option><option value="Property Damage">Property Damage</option><option value="Lost Time Injury">Lost Time Injury</option></select></div>
-        <div><label class="block text-slate-300 mb-1">Deskripsi Singkat</label><textarea name="Description" rows="2" placeholder="Jelaskan kronologi singkat..." required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></textarea></div>
-        <div><label class="block text-slate-300 mb-1">Lokasi</label><input type="text" name="Location" placeholder="Lokasi kejadian" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Tingkat Keparahan (Severity)</label><select name="Severity" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option></select></div>
-        <div><label class="block text-slate-300 mb-1">Status Investigasi</label><select name="Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Open">Open</option><option value="Under Investigation">Under Investigation</option><option value="Closed">Closed</option></select></div>
+        <div><label class="block text-slate-300 mb-1">Deskripsi Kejadian</label><textarea name="Description" rows="2" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></textarea></div>
+        <div><label class="block text-slate-300 mb-1">Lokasi</label><input type="text" name="Location" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Tingkat Keparahan</label><select name="Severity" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option></select></div>
+        <div><label class="block text-slate-300 mb-1">Status</label><select name="Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Open">Open</option><option value="Under Investigation">Under Investigation</option><option value="Closed">Closed</option></select></div>
+        <!-- UPLOAD FILE FIELD -->
+        <div>
+          <label class="block text-slate-300 mb-1">Unggah Lampiran (Foto / Laporan PDF)</label>
+          <input type="file" name="attachment" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-300 text-xs">
+          <p class="text-[10px] text-slate-500 mt-1">Otomatis tersimpan ke folder Drive `YYYY/MM` Insiden.</p>
+        </div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeModal('incidentModal')" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-rose-600 hover:bg-rose-500 text-white">Laporkan</button>
+          <button type="button" onclick="closeModal('incidentModal')" class="px-4 py-2 rounded-lg text-slate-400">Batal</button>
+          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-rose-600 text-white">Kirim Report</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 4. MODAL INSPECTIONS -->
-  <div id="inspectionModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2"><i class="fa-solid fa-clipboard-check text-purple-400"></i><span>Tambah Audit & Inspeksi</span></h3>
-        <button onclick="closeModal('inspectionModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <form id="inspectionForm" onsubmit="submitForm(event, 'addInspection', 'inspectionForm', 'inspectionModal')" class="space-y-3 text-xs">
-        <div><label class="block text-slate-300 mb-1">Audit ID</label><input type="text" name="Audit_ID" value="AUD-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Inspector</label><input type="text" name="Inspector" placeholder="Nama Auditor" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Tanggal</label><input type="date" name="Date" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Lokasi</label><input type="text" name="Location" placeholder="Area Inspeksi" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Checklist Notes (Catatan)</label><input type="text" name="Checklist_JSON" value="Semua APD & APAR Normal" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Score (%)</label><input type="number" name="Score" value="95" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Status</label><select name="Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Pass">Pass</option><option value="Needs Follow-up">Needs Follow-up</option></select></div>
-        <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeModal('inspectionModal')" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-purple-600 hover:bg-purple-500 text-white">Simpan Audit</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 5. MODAL SIO / CERTIFICATIONS -->
-  <div id="sioModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2"><i class="fa-solid fa-id-card text-teal-400"></i><span>Tambah Sertifikasi / SIO</span></h3>
-        <button onclick="closeModal('sioModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <form id="sioForm" onsubmit="submitForm(event, 'addCertification', 'sioForm', 'sioModal')" class="space-y-3 text-xs">
-        <div><label class="block text-slate-300 mb-1">Cert ID</label><input type="text" name="Cert_ID" value="CRT-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Nama Pemegang</label><input type="text" name="Holder_Name" placeholder="Nama Pekerja" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Tipe Sertifikat</label><input type="text" name="Type" placeholder="SIO Operator Crane / K3 Umum" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Nomor Lisensi</label><input type="text" name="Cert_Number" placeholder="No. Lisensi Resmi" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Masa Berlaku (Expiry Date)</label><input type="date" name="Expiry_Date" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Status</label><select name="Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Aktif">Aktif</option><option value="Expired">Expired</option></select></div>
-        <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeModal('sioModal')" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-teal-600 hover:bg-teal-500 text-white">Simpan Sertifikat</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 6. MODAL CSMS -->
-  <div id="csmsModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2"><i class="fa-solid fa-building-user text-indigo-400"></i><span>Tambah Data CSMS Vendor</span></h3>
-        <button onclick="closeModal('csmsModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <form id="csmsForm" onsubmit="submitForm(event, 'addCsms', 'csmsForm', 'csmsModal')" class="space-y-3 text-xs">
-        <div><label class="block text-slate-300 mb-1">Contractor ID</label><input type="text" name="Contractor_ID" value="CTR-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Nama Perusahaan</label><input type="text" name="Company_Name" placeholder="PT Vendor Mandiri" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">CSMS Score</label><input type="number" name="CSMS_Score" value="88" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Tanggal Evaluasi</label><input type="date" name="Evaluation_Date" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Status</label><select name="Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Approved">Approved</option><option value="Under Review">Under Review</option><option value="Rejected">Rejected</option></select></div>
-        <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeModal('csmsModal')" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white">Simpan CSMS</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 7. MODAL LEGAL COMPLIANCE -->
+  <!-- MODAL LEGAL COMPLIANCE (WITH FILE UPLOAD) -->
   <div id="legalModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2"><i class="fa-solid fa-scale-balanced text-amber-500"></i><span>Tambah Legal Compliance</span></h3>
-        <button onclick="closeModal('legalModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <h3 class="font-bold text-white text-base"><i class="fa-solid fa-scale-balanced text-amber-500 mr-2"></i>Tambah Legal Compliance</h3>
+        <button onclick="closeModal('legalModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <form id="legalForm" onsubmit="submitForm(event, 'addLegal', 'legalForm', 'legalModal')" class="space-y-3 text-xs">
+      <form id="legalForm" onsubmit="submitFormWithFileUpload(event, 'addLegal', 'legalForm', 'legalModal')" class="space-y-3 text-xs">
         <div><label class="block text-slate-300 mb-1">Rule ID</label><input type="text" name="Rule_ID" value="REG-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Nama Regulasi</label><input type="text" name="Regulation_Name" placeholder="UU No. 1 Tahun 1970" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Pasal (Clause)</label><input type="text" name="Clause" placeholder="Pasal 3 Ayat 1" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Status Kepatuhan</label><select name="Compliance_Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Compliant">Compliant</option><option value="In Progress">In Progress</option><option value="Non-Compliant">Non-Compliant</option></select></div>
-        <div><label class="block text-slate-300 mb-1">Action Required</label><input type="text" name="Action_Required" placeholder="Tindakan koreksi jika ada" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Nama Regulasi</label><input type="text" name="Regulation_Name" placeholder="UU No 1 Th 1970" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Pasal / Clause</label><input type="text" name="Clause" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Status Kepatuhan</label><select name="Compliance_Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Compliant">Compliant</option><option value="In Progress">In Progress</option></select></div>
+        <div><label class="block text-slate-300 mb-1">Action Required</label><input type="text" name="Action_Required" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <!-- UPLOAD FILE FIELD -->
+        <div>
+          <label class="block text-slate-300 mb-1">Unggah Dokumen Sertifikat / PDF UU</label>
+          <input type="file" name="attachment" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-300 text-xs">
+        </div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeModal('legalModal')" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-amber-600 hover:bg-amber-500 text-white">Simpan Regulasi</button>
+          <button type="button" onclick="closeModal('legalModal')" class="px-4 py-2 rounded-lg text-slate-400">Batal</button>
+          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-amber-600 text-white">Simpan Regulasi</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 8. MODAL TRAINING & TBM -->
-  <div id="trainingModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2"><i class="fa-solid fa-people-group text-sky-400"></i><span>Tambah Jadwal Training / TBM</span></h3>
-        <button onclick="closeModal('trainingModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <form id="trainingForm" onsubmit="submitForm(event, 'addTraining', 'trainingForm', 'trainingModal')" class="space-y-3 text-xs">
-        <div><label class="block text-slate-300 mb-1">Event ID</label><input type="text" name="Event_ID" value="TRN-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Judul / Topik</label><input type="text" name="Title" placeholder="Toolbox Meeting Pagi" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Pembicara (Speaker)</label><input type="text" name="Speaker" placeholder="Nama Safety Officer" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Tanggal</label><input type="date" name="Date" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Jumlah Peserta</label><input type="number" name="Attendees_Count" value="25" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Status</label><select name="Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Scheduled">Scheduled</option><option value="Completed">Completed</option></select></div>
-        <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeModal('trainingModal')" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-sky-600 hover:bg-sky-500 text-white">Simpan Training</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 9. MODAL INVENTORY APD -->
-  <div id="inventoryModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2"><i class="fa-solid fa-boxes-packing text-cyan-400"></i><span>Tambah / Update Inventory APD</span></h3>
-        <button onclick="closeModal('inventoryModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <form id="inventoryForm" onsubmit="submitForm(event, 'addInventory', 'inventoryForm', 'inventoryModal')" class="space-y-3 text-xs">
-        <div><label class="block text-slate-300 mb-1">Item ID</label><input type="text" name="Item_ID" value="APD-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Nama Alat / APD</label><input type="text" name="Item_Name" placeholder="Full Body Harness" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Jumlah Stok (Qty)</label><input type="number" name="Stock_Qty" value="50" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Satuan (Unit)</label><input type="text" name="Unit" value="Pcs" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Minimum Stock</label><input type="number" name="Min_Stock" value="10" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Tanggal Restock Terakhir</label><input type="date" name="Last_Restock" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeModal('inventoryModal')" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white">Simpan APD</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 10. MODAL CAPA TRACKING -->
+  <!-- MODAL CAPA TRACKING (WITH FILE UPLOAD) -->
   <div id="capaModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base flex items-center space-x-2"><i class="fa-solid fa-list-check text-orange-400"></i><span>Tambah CAPA Baru</span></h3>
-        <button onclick="closeModal('capaModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <h3 class="font-bold text-white text-base"><i class="fa-solid fa-list-check text-orange-400 mr-2"></i>Tambah CAPA Baru</h3>
+        <button onclick="closeModal('capaModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <form id="capaForm" onsubmit="submitForm(event, 'addCapa', 'capaForm', 'capaModal')" class="space-y-3 text-xs">
+      <form id="capaForm" onsubmit="submitFormWithFileUpload(event, 'addCapa', 'capaForm', 'capaModal')" class="space-y-3 text-xs">
         <div><label class="block text-slate-300 mb-1">CAPA ID</label><input type="text" name="CAPA_ID" value="CAPA-001" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Sumber Temuan (Source)</label><input type="text" name="Source" placeholder="Audit Internal / Insiden" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
-        <div><label class="block text-slate-300 mb-1">Deskripsi Temuan</label><textarea name="Issue_Description" rows="2" placeholder="Uraian masalah..." required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></textarea></div>
-        <div><label class="block text-slate-300 mb-1">Tindakan Perbaikan (Corrective Action)</label><textarea name="Corrective_Action" rows="2" placeholder="Langkah perbaikan..." required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></textarea></div>
-        <div><label class="block text-slate-300 mb-1">Penanggung Jawab (Assignee)</label><input type="text" name="Assignee" placeholder="Nama PIC" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Sumber Temuan</label><input type="text" name="Source" placeholder="Audit / Insiden" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
+        <div><label class="block text-slate-300 mb-1">Deskripsi Temuan</label><textarea name="Issue_Description" rows="2" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></textarea></div>
+        <div><label class="block text-slate-300 mb-1">Tindakan Perbaikan</label><textarea name="Corrective_Action" rows="2" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></textarea></div>
+        <div><label class="block text-slate-300 mb-1">PIC (Assignee)</label><input type="text" name="Assignee" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Due Date</label><input type="date" name="Due_Date" required class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"></div>
         <div><label class="block text-slate-300 mb-1">Status</label><select name="Status" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"><option value="Open">Open</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option></select></div>
+        <!-- UPLOAD FILE FIELD -->
+        <div>
+          <label class="block text-slate-300 mb-1">Unggah Berkas Bukti Closing CAPA</label>
+          <input type="file" name="attachment" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-300 text-xs">
+        </div>
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-800">
-          <button type="button" onclick="closeModal('capaModal')" class="px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800">Batal</button>
-          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-orange-600 hover:bg-orange-500 text-white">Simpan CAPA</button>
+          <button type="button" onclick="closeModal('capaModal')" class="px-4 py-2 rounded-lg text-slate-400">Batal</button>
+          <button type="submit" class="px-4 py-2 font-bold rounded-lg bg-orange-600 text-white">Simpan CAPA</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="w-full bg-slate-950 border-t border-slate-900 py-3 px-4 text-center text-xs text-slate-500 z-10">
-    HSE-Init Digital Management System | Created by UQ
-  </footer>
-
-  <!-- DYNAMIC JAVASCRIPT LOGIC & PWA INJECTION -->
   <script>
-    // --- STATE MANAGEMENT ---
     let GAS_URL = localStorage.getItem('HSE_INIT_GAS_URL') || '';
     let currentUserRole = sessionStorage.getItem('HSE_USER_ROLE') || '';
     let currentUserName = sessionStorage.getItem('HSE_USER_NAME') || '';
-    
-    let sampleHIRADC = [];
-    let samplePTW = [];
 
-    // --- INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
       checkAuthStatus();
       initCharts();
-      renderHiradcTable();
-      renderPtwCards();
-      registerServiceWorkerAndPWA();
       updateReportInput();
     });
 
-    // --- AUTHENTICATION & LOGIN LOGIC ---
-    function switchLoginTab(role) {
-      const userBtn = document.getElementById('tabUserBtn');
-      const adminBtn = document.getElementById('tabAdminBtn');
-      const userForm = document.getElementById('userLoginForm');
-      const adminForm = document.getElementById('adminLoginForm');
+    async function handleDynamicLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const loginBtn = document.getElementById('loginBtn');
 
-      if (role === 'user') {
-        userBtn.className = "py-2.5 rounded-lg bg-emerald-600 text-white transition";
-        adminBtn.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
-        userForm.classList.remove('hidden');
-        adminForm.classList.add('hidden');
-      } else {
-        adminBtn.className = "py-2.5 rounded-lg bg-blue-600 text-white transition";
-        userBtn.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
-        adminForm.classList.remove('hidden');
-        userForm.classList.add('hidden');
+      if (!GAS_URL) {
+        alert("Alamat API Google Apps Script (GAS) belum diset! Harap konfigurasikan terlebih dahulu via Admin.");
+        return;
       }
-    }
 
-    function handleUserLogin(e) {
-      e.preventDefault();
-      const name = document.getElementById('userNameInput').value.trim();
-      const dept = document.getElementById('userDeptInput').value.trim();
+      loginBtn.innerText = "Memverifikasi...";
+      loginBtn.disabled = true;
+
+      const response = await callGasBackend('loginUser', { username, password });
       
-      if (!name || !dept) return;
+      loginBtn.innerText = "Masuk ke Aplikasi";
+      loginBtn.disabled = false;
 
-      currentUserRole = 'user';
-      currentUserName = `${name} (${dept})`;
-      sessionStorage.setItem('HSE_USER_ROLE', currentUserRole);
-      sessionStorage.setItem('HSE_USER_NAME', currentUserName);
-
-      checkAuthStatus();
-    }
-
-    function handleAdminLogin(e) {
-      e.preventDefault();
-      const pin = document.getElementById('adminPasswordInput').value.trim();
-      
-      // PIN Admin Default (Dapat Anda ubah sesuai kebutuhan)
-      if (pin === 'HSEgo123') {
-        currentUserRole = 'admin';
-        currentUserName = 'Administrator';
+      if (response && response.status === 'success') {
+        currentUserRole = response.user.role;
+        currentUserName = `${response.user.name} (${response.user.department})`;
         sessionStorage.setItem('HSE_USER_ROLE', currentUserRole);
         sessionStorage.setItem('HSE_USER_NAME', currentUserName);
         checkAuthStatus();
       } else {
-        alert('PIN Admin Salah! Gunakan default: admin123');
+        alert(response ? response.message : "Gagal terhubung ke database!");
       }
-    }
-
-    function handleLogout() {
-      sessionStorage.removeItem('HSE_USER_ROLE');
-      sessionStorage.removeItem('HSE_USER_NAME');
-      currentUserRole = '';
-      currentUserName = '';
-      document.getElementById('loginOverlay').classList.remove('hidden');
     }
 
     function checkAuthStatus() {
@@ -971,6 +522,7 @@
       const adminBtn = document.getElementById('adminSettingsBtn');
       const roleBadge = document.getElementById('userRoleBadge');
       const nameLabel = document.getElementById('loggedInNameLabel');
+      const navUserMgmt = document.getElementById('navUserMgmt');
 
       if (!currentUserRole) {
         overlay.classList.remove('hidden');
@@ -982,262 +534,69 @@
 
       if (currentUserRole === 'admin') {
         roleBadge.innerText = "Administrator Mode";
-        roleBadge.className = "text-[10px] text-blue-400 font-medium";
-        adminBtn.classList.remove('hidden'); // Admin dapat melihat tombol setting GAS URL
-        
-        // Jika admin belum mengisi URL GAS, otomatis buka modal setting
-        if (!GAS_URL) {
-          openSettingsModal();
-        } else {
-          syncAllData();
-        }
+        roleBadge.className = "text-[10px] text-purple-400 font-medium";
+        adminBtn.classList.remove('hidden');
+        navUserMgmt.classList.remove('hidden'); // Tampilkan modul User Management
+        fetchUsersList();
       } else {
-        roleBadge.innerText = "User / Staff Mode";
+        roleBadge.innerText = "User Mode";
         roleBadge.className = "text-[10px] text-emerald-400 font-medium";
-        adminBtn.classList.add('hidden'); // User TIDAK DAPAT melihat tombol setting GAS URL
-
-        if (!GAS_URL) {
-          alert("Perhatian: Alamat Google Apps Script (GAS) belum dikonfigurasi oleh Administrator. Harap hubungi Admin.");
-        } else {
-          syncAllData();
-        }
+        adminBtn.classList.add('hidden');
+        navUserMgmt.classList.add('hidden');
       }
-    }
-
-    // --- TAB SWITCHING ---
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.nav-item').forEach(el => {
-        el.classList.remove('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
-        el.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/50');
-      });
-      
-      const selectedTab = document.getElementById(`tab-${tabId}`);
-      if (selectedTab) {
-        selectedTab.classList.remove('hidden');
-      }
-      
-      const activeNavBtn = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
-      if (activeNavBtn) {
-        activeNavBtn.classList.add('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
-        activeNavBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/50');
-      }
-    }
-
-    // --- CHART IMPLEMENTATION ---
-    function initCharts() {
-      const ctxTrend = document.getElementById('incidentTrendChart').getContext('2d');
-      new Chart(ctxTrend, {
-        type: 'line',
-        data: {
-          labels: ['Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov'],
-          datasets: [{
-            label: 'Safety Observation',
-            data: [0, 0, 0, 0, 0, 0],
-            borderColor: '#22c55e',
-            backgroundColor: 'rgba(34, 197, 94, 0.1)',
-            fill: true,
-            tension: 0.3
-          }, {
-            label: 'Near Miss / Insiden',
-            data: [0, 0, 0, 0, 0, 0],
-            borderColor: '#f43f5e',
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#94a3b8' } } },
-          scales: {
-            x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-            y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.05)' } }
-          }
-        }
-      });
-
-      const ctxRisk = document.getElementById('riskDistributionChart').getContext('2d');
-      new Chart(ctxRisk, {
-        type: 'doughnut',
-        data: {
-          labels: ['Low Risk', 'Medium Risk', 'High Risk'],
-          datasets: [{
-            data: [1, 1, 1],
-            backgroundColor: ['#22c55e', '#f59e0b', '#ef4444']
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } }
-        }
-      });
-    }
-
-    // --- UI RENDERING FUNCTIONS ---
-    function renderHiradcTable() {
-      const tbody = document.getElementById('hiradcTableBody');
-      if (sampleHIRADC.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-500">Belum ada data HIRADC di spreadsheet.</td></tr>`;
-        return;
-      }
-      tbody.innerHTML = sampleHIRADC.map(item => `
-        <tr class="hover:bg-slate-900/50">
-          <td class="p-3 font-mono text-emerald-400 font-semibold">${item.id}</td>
-          <td class="p-3 text-white font-medium">${item.activity}</td>
-          <td class="p-3">${item.hazard}</td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400">${item.initialRisk}</span></td>
-          <td class="p-3">${item.control}</td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400">${item.residualRisk}</span></td>
-          <td class="p-3 text-right"><button class="text-slate-400 hover:text-white"><i class="fa-solid fa-pen-to-square"></i></button></td>
-        </tr>
-      `).join('');
-    }
-
-    function renderPtwCards() {
-      const container = document.getElementById('ptwCardsContainer');
-      if (samplePTW.length === 0) {
-        container.innerHTML = `<div class="glass-card p-4 rounded-xl text-center text-slate-500 col-span-full">Belum ada data PTW di spreadsheet.</div>`;
-        return;
-      }
-      container.innerHTML = samplePTW.map(ptw => `
-        <div class="glass-card p-4 rounded-xl space-y-3">
-          <div class="flex justify-between items-start">
-            <span class="text-xs font-mono font-bold text-blue-400">${ptw.id}</span>
-            <span class="px-2 py-1 rounded-full text-[10px] font-bold ${ptw.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'}">${ptw.status}</span>
-          </div>
-          <h4 class="font-bold text-white text-sm">${ptw.type}</h4>
-          <p class="text-xs text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i>${ptw.location}</p>
-          <div class="pt-2 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
-            <span>Pemohon: ${ptw.applicant}</span>
-            <button class="text-emerald-400 hover:underline">Detail</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // --- CONFIG & BACKEND CONNECTIVITY (ADMIN ONLY) ---
-    function openSettingsModal() {
-      if (currentUserRole !== 'admin') {
-        alert("Akses ditolak! Hanya Administrator yang dapat mengubah alamat GAS.");
-        return;
-      }
-      document.getElementById('gasUrlInput').value = GAS_URL;
-      document.getElementById('settingsModal').classList.remove('hidden');
-    }
-    function closeSettingsModal() {
-      document.getElementById('settingsModal').classList.add('hidden');
-    }
-    function saveGasUrl() {
-      if (currentUserRole !== 'admin') return;
-      GAS_URL = document.getElementById('gasUrlInput').value.trim();
-      localStorage.setItem('HSE_INIT_GAS_URL', GAS_URL);
-      closeSettingsModal();
-      checkAuthStatus();
       syncAllData();
     }
 
-    // --- DYNAMIC REPORT INPUT ADAPTER ---
-    function updateReportInput() {
-      const type = document.getElementById('reportPeriodType').value;
-      const label = document.getElementById('reportInputLabel');
-      const input = document.getElementById('reportValueInput');
-      
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-
-      if (type === 'daily') {
-        label.innerText = 'Pilih Tanggal Harian';
-        input.type = 'date';
-        input.value = `${year}-${month}-${day}`;
-      } else if (type === 'monthly') {
-        label.innerText = 'Pilih Bulan & Tahun';
-        input.type = 'month';
-        input.value = `${year}-${month}`;
-      } else if (type === 'yearly') {
-        label.innerText = 'Pilih Tahun';
-        input.type = 'number';
-        input.placeholder = 'Contoh: 2026';
-        input.value = year;
-      }
+    function handleLogout() {
+      sessionStorage.clear();
+      currentUserRole = '';
+      currentUserName = '';
+      document.getElementById('loginOverlay').classList.remove('hidden');
     }
 
-    async function triggerCustomExport() {
-      const periodType = document.getElementById('reportPeriodType').value;
-      const periodValue = document.getElementById('reportValueInput').value;
-      const format = document.getElementById('reportFormat').value;
-
-      if (!periodValue) {
-        alert("Silakan masukkan nilai periode laporan terlebih dahulu!");
-        return;
-      }
-
-      alert(`Menyiapkan data laporan K3 (${periodType.toUpperCase()} - ${periodValue})... Mohon tunggu sebentar.`);
-
-      if (GAS_URL) {
-        const response = await callGasBackend('getCustomReport', { periodType, periodValue });
+    async function fetchUsersList() {
+      if (GAS_URL && currentUserRole === 'admin') {
+        const response = await callGasBackend('getUsersList');
         if (response && response.status === 'success') {
-          alert(`Laporan berhasil ditarik! Total data ditemukan: ${response.totalData} baris.`);
-          if (format === 'CSV' && response.dataRows) {
-            downloadCSV(response.dataRows, `Laporan_HSE_${periodType}_${periodValue}.csv`);
-          } else {
-            console.log("Data Laporan:", response.dataRows);
-            alert("Format PDF summary ringkas ditampilkan via konsol / siap diunduh.");
-          }
-        } else {
-          alert("Gagal mengambil data dari server backend.");
+          const tbody = document.getElementById('usersTableBody');
+          tbody.innerHTML = response.users.map(u => `
+            <tr class="hover:bg-slate-900/50">
+              <td class="p-3 font-mono text-purple-400 font-semibold">${u.id}</td>
+              <td class="p-3 text-white font-medium">${u.name}</td>
+              <td class="p-3">${u.username}</td>
+              <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-400' : 'bg-emerald-500/20 text-emerald-400'}">${u.role.toUpperCase()}</span></td>
+              <td class="p-3">${u.department}</td>
+              <td class="p-3"><span class="text-emerald-400">${u.status}</span></td>
+            </tr>
+          `).join('');
         }
-      } else {
-        alert("URL GAS belum terkonfigurasi.");
       }
     }
 
-    function downloadCSV(rows, filename) {
-      let csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
-      let encodedUri = encodeURI(csvContent);
-      let link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    // --- UNIVERSAL MODAL & SUBMISSION HANDLER ---
-    function openHiradcModal() { document.getElementById('hiradcModal').classList.remove('hidden'); }
-    function openPtwModal() { document.getElementById('ptwModal').classList.remove('hidden'); }
-    function openIncidentModal() { document.getElementById('incidentModal').classList.remove('hidden'); }
-    function openInspectionModal() { document.getElementById('inspectionModal').classList.remove('hidden'); }
-    function openSioModal() { document.getElementById('sioModal').classList.remove('hidden'); }
-    function openCsmsModal() { document.getElementById('csmsModal').classList.remove('hidden'); }
-    function openLegalModal() { document.getElementById('legalModal').classList.remove('hidden'); }
-    function openTrainingModal() { document.getElementById('trainingModal').classList.remove('hidden'); }
-    function openInventoryModal() { document.getElementById('inventoryModal').classList.remove('hidden'); }
-    function openCapaModal() { document.getElementById('capaModal').classList.remove('hidden'); }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.add('hidden');
-    }
-
-    async function submitForm(event, actionName, formId, modalId) {
+    async function submitFormWithFileUpload(event, actionName, formId, modalId) {
       event.preventDefault();
       const formEl = document.getElementById(formId);
       const formData = new FormData(formEl);
       const payloadData = {};
-      formData.forEach((value, key) => {
-        payloadData[key] = value;
-      });
+      
+      let fileInput = formEl.querySelector('input[type="file"]');
+      let fileObj = null;
 
-      // Jika user yang menginput, tambahkan info pembuat/user yang login jika diperlukan
-      if (currentUserRole === 'user') {
-        payloadData.Logged_User = currentUserName;
+      if (fileInput && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const base64 = await convertFileToBase64(file);
+        payloadData.fileData = base64;
+        payloadData.fileName = file.name;
+        payloadData.fileMime = file.type;
       }
+
+      formData.forEach((value, key) => {
+        if (key !== 'attachment') payloadData[key] = value;
+      });
 
       const submitBtn = event.target.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerText;
-      submitBtn.innerText = "Menyimpan...";
+      submitBtn.innerText = "Mengirim & Mengunggah File...";
       submitBtn.disabled = true;
 
       const response = await callGasBackend(actionName, { data: payloadData });
@@ -1246,20 +605,55 @@
       submitBtn.disabled = false;
 
       if (response && response.status === 'success') {
-        alert("Data berhasil disimpan ke Google Spreadsheet!");
+        alert("Data & Lampiran Berhasil Disimpan!");
         closeModal(modalId);
         formEl.reset();
+        if (actionName === 'registerUser') fetchUsersList();
         syncAllData();
       } else {
-        alert("Gagal menyimpan ke Google Sheets. Pastikan URL GAS benar.");
+        alert("Gagal: " + (response ? response.message : "Terjadi kesalahan server"));
       }
     }
 
-    // --- BACKEND API COMMUNICATOR ---
+    function convertFileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // --- UTILITIES UI ---
+    function openUserModal() { document.getElementById('userModal').classList.remove('hidden'); }
+    function openIncidentModal() { document.getElementById('incidentModal').classList.remove('hidden'); }
+    function openLegalModal() { document.getElementById('legalModal').classList.remove('hidden'); }
+    function openCapaModal() { document.getElementById('capaModal').classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function openSettingsModal() { document.getElementById('gasUrlInput').value = GAS_URL; document.getElementById('settingsModal').classList.remove('hidden'); }
+    function closeSettingsModal() { document.getElementById('settingsModal').classList.add('hidden'); }
+    
+    function saveGasUrl() {
+      GAS_URL = document.getElementById('gasUrlInput').value.trim();
+      localStorage.setItem('HSE_INIT_GAS_URL', GAS_URL);
+      closeSettingsModal();
+      syncAllData();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.remove('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
+        el.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/50');
+      });
+      const selectedTab = document.getElementById(`tab-${tabId}`);
+      if (selectedTab) selectedTab.classList.remove('hidden');
+      const activeNavBtn = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+      if (activeNavBtn) activeNavBtn.classList.add('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
+    }
+
     async function callGasBackend(action, payload = {}) {
-      if (!GAS_URL) {
-        return null;
-      }
+      if (!GAS_URL) return null;
       try {
         const response = await fetch(GAS_URL, {
           method: 'POST',
@@ -1268,13 +662,13 @@
         });
         return await response.json();
       } catch (err) {
-        console.error("Error communicating with GAS:", err);
+        console.error("GAS Error:", err);
         return null;
       }
     }
 
     function syncAllData() {
-      if(GAS_URL) {
+      if (GAS_URL) {
         callGasBackend('getDashboardMetrics').then(res => {
           if (res && res.status === 'success') {
             document.getElementById('kpi-ptw').innerText = res.data.activePtw;
@@ -1282,37 +676,52 @@
             document.getElementById('kpi-incidents').innerText = res.data.totalIncidents;
             document.getElementById('kpi-capa').innerText = res.data.pendingCapa;
           }
-        }).catch(err => {
-          console.error("Gagal sinkronisasi data dashboard:", err);
         });
       }
     }
 
-    // --- PWA SERVICE WORKER & DYNAMIC MANIFEST REGISTRATION ---
-    function registerServiceWorkerAndPWA() {
-      const manifestObj = {
-        name: "HSE-Init Digital Management System",
-        short_name: "HSE-Init",
-        start_url: "./index.html",
-        display: "standalone",
-        background_color: "#0f172a",
-        theme_color: "#0f172a",
-        icons: [{
-          src: "https://cdn-icons-png.flaticon.com/512/1160/1160358.png",
-          sizes: "512x512",
-          type: "image/png"
-        }]
-      };
-      const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/json' });
-      const manifestUrl = URL.createObjectURL(blob);
-      const link = document.createElement('link');
-      link.rel = 'manifest';
-      link.href = manifestUrl;
-      document.head.appendChild(link);
+    function updateReportInput() {
+      const type = document.getElementById('reportPeriodType').value;
+      const label = document.getElementById('reportInputLabel');
+      const input = document.getElementById('reportValueInput');
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      if (type === 'daily') { label.innerText = 'Pilih Tanggal Harian'; input.type = 'date'; }
+      else if (type === 'monthly') { label.innerText = 'Pilih Bulan & Tahun'; input.type = 'month'; input.value = `${year}-${month}`; }
+      else if (type === 'yearly') { label.innerText = 'Pilih Tahun'; input.type = 'number'; input.value = year; }
+    }
 
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW Registration Fail:', err));
+    async function triggerCustomExport() {
+      const periodType = document.getElementById('reportPeriodType').value;
+      const periodValue = document.getElementById('reportValueInput').value;
+      if (!periodValue) return alert("Silakan masukkan periode laporan!");
+      
+      const response = await callGasBackend('getCustomReport', { periodType, periodValue });
+      if (response && response.status === 'success') {
+        let csvContent = "data:text/csv;charset=utf-8," + response.dataRows.map(e => e.join(",")).join("\n");
+        let link = document.createElement("a");
+        link.setAttribute("href", encodeURI(csvContent));
+        link.setAttribute("download", `Laporan_HSE_${periodType}_${periodValue}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
+    }
+
+    function initCharts() {
+      const ctxTrend = document.getElementById('incidentTrendChart').getContext('2d');
+      new Chart(ctxTrend, {
+        type: 'line',
+        data: { labels: ['Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov'], datasets: [{ label: 'Observation', data: [0, 0, 0, 0, 0, 0], borderColor: '#22c55e' }] },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+      const ctxRisk = document.getElementById('riskDistributionChart').getContext('2d');
+      new Chart(ctxRisk, {
+        type: 'doughnut',
+        data: { labels: ['Low', 'Med', 'High'], datasets: [{ data: [1, 1, 1], backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'] }] },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
     }
   </script>
 </body>
