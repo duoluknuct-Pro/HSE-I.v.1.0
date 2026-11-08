@@ -2,7 +2,7 @@
  * Service Worker for HSE-Init PWA
  * Created by UQ
  */
-const CACHE_NAME = 'hse-init-v1';
+const CACHE_NAME = 'hse-init-v2';
 const ASSETS = [
   './',
   './index.html',
