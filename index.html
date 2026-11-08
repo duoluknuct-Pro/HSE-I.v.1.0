@@ -107,62 +107,62 @@
         <div class="px-3 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Modul Utama</div>
         
         <nav class="space-y-1" id="desktopNav">
-          <button onclick="switchTab('dashboard')" class="nav-item active w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-emerald-400 bg-slate-800/80 border border-slate-700/50">
+          <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-item active w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-emerald-400 bg-slate-800/80 border border-slate-700/50">
             <i class="fa-solid fa-chart-pie w-5 text-center"></i>
             <span>Dashboard</span>
           </button>
           
-          <button onclick="switchTab('hiradc')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('hiradc')" data-tab="hiradc" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-triangle-exclamation w-5 text-center text-amber-400"></i>
             <span>HIRADC Risk Matrix</span>
           </button>
 
-          <button onclick="switchTab('ptw')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('ptw')" data-tab="ptw" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-file-signature w-5 text-center text-blue-400"></i>
             <span>Izin Kerja Digital (PTW)</span>
           </button>
 
-          <button onclick="switchTab('incidents')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('incidents')" data-tab="incidents" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-user-injured w-5 text-center text-rose-400"></i>
             <span>Insiden & Near Miss</span>
           </button>
 
-          <button onclick="switchTab('inspections')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('inspections')" data-tab="inspections" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-clipboard-check w-5 text-center text-purple-400"></i>
             <span>Audit & Inspeksi</span>
           </button>
 
-          <button onclick="switchTab('sio')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('sio')" data-tab="sio" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-id-card w-5 text-center text-teal-400"></i>
             <span>SIA / SIO Sertifikasi</span>
           </button>
 
-          <button onclick="switchTab('csms')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('csms')" data-tab="csms" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-building-user w-5 text-center text-indigo-400"></i>
             <span>Manajemen CSMS</span>
           </button>
 
-          <button onclick="switchTab('legal')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('legal')" data-tab="legal" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-scale-balanced w-5 text-center text-amber-500"></i>
             <span>Legal Compliance</span>
           </button>
 
-          <button onclick="switchTab('training')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('training')" data-tab="training" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-people-group w-5 text-center text-sky-400"></i>
             <span>Training & TBM</span>
           </button>
 
-          <button onclick="switchTab('inventory')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('inventory')" data-tab="inventory" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-boxes-packing w-5 text-center text-cyan-400"></i>
             <span>Inventory APD</span>
           </button>
 
-          <button onclick="switchTab('capa')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('capa')" data-tab="capa" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-list-check w-5 text-center text-orange-400"></i>
             <span>CAPA Tracking</span>
           </button>
 
-          <button onclick="switchTab('reports')" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <button onclick="switchTab('reports')" data-tab="reports" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-file-export w-5 text-center text-emerald-400"></i>
             <span>Export & Laporan</span>
           </button>
@@ -582,13 +582,29 @@
       registerServiceWorkerAndPWA();
     });
 
-    // --- TAB SWITCHING ---
+    // --- TAB SWITCHING (FIXED & GLOBAL) ---
     function switchTab(tabId) {
+      // Sembunyikan semua tab content
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active', 'bg-slate-800/80', 'text-emerald-400'));
       
+      // Hapus kelas aktif dari semua nav-item desktop
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.remove('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
+        el.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/50');
+      });
+      
+      // Tampilkan tab yang dipilih
       const selectedTab = document.getElementById(`tab-${tabId}`);
-      if (selectedTab) selectedTab.classList.remove('hidden');
+      if (selectedTab) {
+        selectedTab.classList.remove('hidden');
+      }
+      
+      // Beri style aktif pada menu navigasi yang sesuai
+      const activeNavBtn = document.querySelector(`.nav-item[onclick*="${tabId}"]`);
+      if (activeNavBtn) {
+        activeNavBtn.classList.add('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
+        activeNavBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/50');
+      }
     }
 
     // --- CHART IMPLEMENTATION ---
