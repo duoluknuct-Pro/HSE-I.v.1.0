@@ -31,7 +31,7 @@
     }
   </script>
 
-  <!-- FontAwesome Icons -->
+  <!-- FontAwesome Icons & Chart.js -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -90,15 +90,12 @@
       </div>
     </div>
 
+    <!-- Right Header Toolbar -->
     <div class="flex items-center space-x-3">
-      <div id="connectionStatus" class="hidden sm:flex items-center space-x-2 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+      <div id="connectionStatus" class="flex items-center space-x-2 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
         <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="backendStatusText">GAS Connected</span>
+        <span id="backendStatusText">GAS Auto-Connected</span>
       </div>
-
-      <button id="adminSettingsBtn" onclick="openSettingsModal()" class="hidden p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition" title="Konfigurasi API Backend">
-        <i class="fa-solid fa-gear text-lg"></i>
-      </button>
 
       <button onclick="handleLogout()" class="p-2 text-rose-400 hover:bg-rose-500/10 rounded-lg transition text-xs flex items-center space-x-1" title="Keluar">
         <i class="fa-solid fa-right-from-bracket"></i>
@@ -121,6 +118,7 @@
             <span>Dashboard</span>
           </button>
 
+          <!-- MODUL KHUSUS ADMIN: USER MANAGEMENT -->
           <button id="navUserMgmt" onclick="switchTab('usermgmt')" data-tab="usermgmt" class="nav-item hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
             <i class="fa-solid fa-users-gear w-5 text-center text-purple-400"></i>
             <span>User Management</span>
@@ -224,7 +222,7 @@
         </div>
       </section>
 
-      <!-- USER MANAGEMENT TAB -->
+      <!-- USER MANAGEMENT TAB (ADMIN ONLY) -->
       <section id="tab-usermgmt" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
@@ -247,7 +245,7 @@
         </div>
       </section>
 
-      <!-- 1. HIRADC RISK MATRIX TAB -->
+      <!-- HIRADC TAB -->
       <section id="tab-hiradc" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
@@ -261,7 +259,7 @@
         <div class="glass-card rounded-xl p-4 text-xs text-slate-400">Kelola dan pantau identifikasi bahaya serta penilaian risiko kerja.</div>
       </section>
 
-      <!-- 2. IZIN KERJA DIGITAL (PTW) TAB -->
+      <!-- PTW TAB -->
       <section id="tab-ptw" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
@@ -289,7 +287,7 @@
         <div class="glass-card rounded-xl p-4 text-xs text-slate-400">File otomatis tersimpan di folder Drive Insiden.</div>
       </section>
 
-      <!-- 3. AUDIT & INSPEKSI TAB -->
+      <!-- INSPECTIONS TAB -->
       <section id="tab-inspections" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
@@ -303,7 +301,7 @@
         <div class="glass-card rounded-xl p-4 text-xs text-slate-400">Modul audit fasilitas dan inspeksi alat K3.</div>
       </section>
 
-      <!-- 4. SIA / SIO SERTIFIKASI TAB -->
+      <!-- SIO / SIA TAB -->
       <section id="tab-sio" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
@@ -317,7 +315,7 @@
         <div class="glass-card rounded-xl p-4 text-xs text-slate-400">Monitoring SIO operator dan SIA alat berat.</div>
       </section>
 
-      <!-- 5. MANAJEMEN CSMS TAB -->
+      <!-- CSMS TAB -->
       <section id="tab-csms" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
@@ -345,7 +343,7 @@
         <div class="glass-card rounded-xl p-4 text-xs text-slate-400">File regulasi otomatis tersimpan ke subfolder Legal.</div>
       </section>
 
-      <!-- 6. TRAINING & TBM TAB -->
+      <!-- TRAINING TAB -->
       <section id="tab-training" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
@@ -359,7 +357,7 @@
         <div class="glass-card rounded-xl p-4 text-xs text-slate-400">Dokumentasi pelatihan dan daftar hadir TBM pekerja.</div>
       </section>
 
-      <!-- 7. INVENTORY APD TAB -->
+      <!-- INVENTORY APD TAB -->
       <section id="tab-inventory" class="tab-content hidden space-y-6">
         <div class="flex justify-between items-center">
           <div>
@@ -414,18 +412,6 @@
 
   <!-- MODALS SECTION -->
 
-  <!-- SETTINGS MODAL -->
-  <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4">
-      <h3 class="font-bold text-white text-base">Pengaturan GAS Web App API</h3>
-      <input type="url" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white">
-      <div class="flex justify-end space-x-2 pt-2">
-        <button onclick="closeSettingsModal()" class="px-4 py-2 text-xs text-slate-400">Batal</button>
-        <button onclick="saveGasUrl()" class="px-4 py-2 text-xs font-bold rounded-lg bg-emerald-600 text-white">Simpan Connection</button>
-      </div>
-    </div>
-  </div>
-
   <!-- USER REGISTRATION MODAL -->
   <div id="userModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4">
@@ -451,7 +437,7 @@
     </div>
   </div>
 
-  <!-- 1. HIRADC MODAL -->
+  <!-- HIRADC MODAL -->
   <div id="hiradcModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -474,7 +460,7 @@
     </div>
   </div>
 
-  <!-- 2. PTW MODAL -->
+  <!-- PTW MODAL -->
   <div id="ptwModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -525,7 +511,7 @@
     </div>
   </div>
 
-  <!-- 3. INSPECTIONS MODAL -->
+  <!-- INSPECTIONS MODAL -->
   <div id="inspectionModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -548,7 +534,7 @@
     </div>
   </div>
 
-  <!-- 4. SIA / SIO MODAL -->
+  <!-- SIA / SIO MODAL -->
   <div id="sioModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -570,7 +556,7 @@
     </div>
   </div>
 
-  <!-- 5. CSMS MODAL -->
+  <!-- CSMS MODAL -->
   <div id="csmsModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -616,7 +602,7 @@
     </div>
   </div>
 
-  <!-- 6. TRAINING MODAL -->
+  <!-- TRAINING MODAL -->
   <div id="trainingModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -638,7 +624,7 @@
     </div>
   </div>
 
-  <!-- 7. INVENTORY APD MODAL -->
+  <!-- INVENTORY APD MODAL -->
   <div id="inventoryModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -688,13 +674,14 @@
   </div>
 
   <script>
-    let GAS_URL = localStorage.getItem('HSE_INIT_GAS_URL') || '';
+    // HARDCODED URL GAS BACKEND (Otomatis Terload Tanpa Setting Manual)
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzTraCIwPY6CPqvol71AUQemHvnRUmX4TR0z4SJdxDC5ytjoVgNDAGYlFMACk2q302a/exec"; // Sesuaikan jika ada perubahan URL Deploy
+
     let currentUserRole = sessionStorage.getItem('HSE_USER_ROLE') || '';
     let currentUserName = sessionStorage.getItem('HSE_USER_NAME') || '';
 
     window.addEventListener('DOMContentLoaded', () => {
       checkAuthStatus();
-      initCharts();
       updateReportInput();
     });
 
@@ -709,11 +696,6 @@
 
       if (!username || !password) {
         alert("Harap isi Username dan Password!");
-        return;
-      }
-
-      if (!GAS_URL) {
-        alert("Alamat API Google Apps Script (GAS) belum diset! Harap konfigurasikan terlebih dahulu via Admin.");
         return;
       }
 
@@ -738,7 +720,6 @@
 
     function checkAuthStatus() {
       const overlay = document.getElementById('loginOverlay');
-      const adminBtn = document.getElementById('adminSettingsBtn');
       const roleBadge = document.getElementById('userRoleBadge');
       const nameLabel = document.getElementById('loggedInNameLabel');
       const navUserMgmt = document.getElementById('navUserMgmt');
@@ -754,13 +735,11 @@
       if (currentUserRole === 'admin') {
         roleBadge.innerText = "Administrator Mode";
         roleBadge.className = "text-[10px] text-purple-400 font-medium";
-        adminBtn.classList.remove('hidden');
         if (navUserMgmt) navUserMgmt.classList.remove('hidden');
         fetchUsersList();
       } else {
         roleBadge.innerText = "User Mode";
         roleBadge.className = "text-[10px] text-emerald-400 font-medium";
-        adminBtn.classList.add('hidden');
         if (navUserMgmt) navUserMgmt.classList.add('hidden');
       }
       syncAllData();
@@ -774,7 +753,7 @@
     }
 
     async function fetchUsersList() {
-      if (GAS_URL && currentUserRole === 'admin') {
+      if (currentUserRole === 'admin') {
         const response = await callGasBackend('getUsersList');
         if (response && response.status === 'success') {
           const tbody = document.getElementById('usersTableBody');
@@ -815,6 +794,7 @@
         alert("Data Berhasil Disimpan!");
         closeModal(modalId);
         formEl.reset();
+        if (actionName === 'registerUser') fetchUsersList();
         syncAllData();
       } else {
         alert("Gagal: " + (response ? response.message : "Terjadi kesalahan server"));
@@ -869,7 +849,7 @@
       });
     }
 
-    // --- MODAL UTILITIES ---
+    // MODAL UTILITIES
     function openUserModal() { document.getElementById('userModal').classList.remove('hidden'); }
     function openHiradcModal() { document.getElementById('hiradcModal').classList.remove('hidden'); }
     function openPtwModal() { document.getElementById('ptwModal').classList.remove('hidden'); }
@@ -883,20 +863,6 @@
     function openCapaModal() { document.getElementById('capaModal').classList.remove('hidden'); }
     
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-    
-    function openSettingsModal() { 
-      document.getElementById('gasUrlInput').value = GAS_URL; 
-      document.getElementById('settingsModal').classList.remove('hidden'); 
-    }
-    function closeSettingsModal() { document.getElementById('settingsModal').classList.add('hidden'); }
-    
-    function saveGasUrl() {
-      GAS_URL = document.getElementById('gasUrlInput').value.trim();
-      localStorage.setItem('HSE_INIT_GAS_URL', GAS_URL);
-      closeSettingsModal();
-      syncAllData();
-      alert("URL GAS berhasil disimpan!");
-    }
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -911,7 +877,6 @@
     }
 
     async function callGasBackend(action, payload = {}) {
-      if (!GAS_URL) return null;
       try {
         const response = await fetch(GAS_URL, {
           method: 'POST',
@@ -926,16 +891,14 @@
     }
 
     function syncAllData() {
-      if (GAS_URL) {
-        callGasBackend('getDashboardMetrics').then(res => {
-          if (res && res.status === 'success') {
-            document.getElementById('kpi-ptw').innerText = res.data.activePtw;
-            document.getElementById('kpi-hiradc').innerText = res.data.highRiskHiradc;
-            document.getElementById('kpi-incidents').innerText = res.data.totalIncidents;
-            document.getElementById('kpi-capa').innerText = res.data.pendingCapa;
-          }
-        });
-      }
+      callGasBackend('getDashboardMetrics').then(res => {
+        if (res && res.status === 'success') {
+          document.getElementById('kpi-ptw').innerText = res.data.activePtw;
+          document.getElementById('kpi-hiradc').innerText = res.data.highRiskHiradc;
+          document.getElementById('kpi-incidents').innerText = res.data.totalIncidents;
+          document.getElementById('kpi-capa').innerText = res.data.pendingCapa;
+        }
+      });
     }
 
     function updateReportInput() {
@@ -964,25 +927,6 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      }
-    }
-
-    function initCharts() {
-      const ctxTrend = document.getElementById('incidentTrendChart');
-      if (ctxTrend) {
-        new Chart(ctxTrend.getContext('2d'), {
-          type: 'line',
-          data: { labels: ['Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov'], datasets: [{ label: 'Observation', data: [0, 0, 0, 0, 0, 0], borderColor: '#22c55e' }] },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      }
-      const ctxRisk = document.getElementById('riskDistributionChart');
-      if (ctxRisk) {
-        new Chart(ctxRisk.getContext('2d'), {
-          type: 'doughnut',
-          data: { labels: ['Low', 'Med', 'High'], datasets: [{ data: [1, 1, 1], backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'] }] },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
       }
     }
   </script>
