@@ -79,6 +79,11 @@
   <!-- TOP HEADER NAVBAR -->
   <header class="sticky top-0 z-40 w-full glass-card border-b border-slate-800 bg-slate-900/90 px-4 py-3 flex items-center justify-between">
     <div class="flex items-center space-x-3">
+      <!-- TOMBOL HAMBURGER MOBILE -->
+      <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" class="md:hidden p-2 text-slate-300 hover:text-white bg-slate-800/60 rounded-lg border border-slate-700 focus:outline-none">
+        <i class="fa-solid fa-bars text-lg"></i>
+      </button>
+
       <div class="flex items-center space-x-2">
         <div class="h-9 w-9 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-lg">
           <i class="fa-solid fa-shield-halved"></i>
@@ -94,7 +99,7 @@
     <div class="flex items-center space-x-3">
       <div id="connectionStatus" class="flex items-center space-x-2 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
         <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="backendStatusText">GAS Auto-Connected</span>
+        <span id="backendStatusText" class="hidden xs:inline">GAS Connected</span>
       </div>
 
       <button onclick="handleLogout()" class="p-2 text-rose-400 hover:bg-rose-500/10 rounded-lg transition text-xs flex items-center space-x-1" title="Keluar">
@@ -104,80 +109,36 @@
     </div>
   </header>
 
+  <!-- MOBILE SIDEBAR OVERLAY & DRAWER -->
+  <div id="mobileSidebarBackdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm hidden md:hidden transition-opacity"></div>
+  <aside id="mobileSidebar" class="fixed top-0 left-0 bottom-0 z-50 w-72 glass-card bg-slate-900 border-r border-slate-800 flex flex-col justify-between overflow-y-auto transform -translate-x-full transition-transform duration-300 md:hidden">
+    <div class="p-4 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-shield-halved text-emerald-400 text-lg"></i>
+          <span class="font-bold text-white text-base">Menu Utama</span>
+        </div>
+        <button onclick="toggleMobileSidebar()" class="p-1.5 text-slate-400 hover:text-white rounded-lg bg-slate-800/50">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <nav class="space-y-1" id="mobileNav">
+        <!-- Rendered dynamically or shared -->
+      </nav>
+    </div>
+  </aside>
+
   <!-- MAIN CONTAINER -->
   <div class="flex flex-1 overflow-hidden">
 
-    <!-- SIDEBAR NAVIGATION -->
+    <!-- DESKTOP SIDEBAR NAVIGATION -->
     <aside id="sidebar" class="w-64 glass-card bg-slate-900 border-r border-slate-800 flex-shrink-0 hidden md:flex flex-col justify-between overflow-y-auto">
       <div class="p-3 space-y-1">
         <div class="px-3 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Modul Utama</div>
         
         <nav class="space-y-1" id="desktopNav">
-          <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-item active w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-emerald-400 bg-slate-800/80 border border-slate-700/50">
-            <i class="fa-solid fa-chart-pie w-5 text-center"></i>
-            <span>Dashboard</span>
-          </button>
-
-          <!-- MODUL KHUSUS ADMIN: USER MANAGEMENT -->
-          <button id="navUserMgmt" onclick="switchTab('usermgmt')" data-tab="usermgmt" class="nav-item hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-users-gear w-5 text-center text-purple-400"></i>
-            <span>User Management</span>
-          </button>
-          
-          <button onclick="switchTab('hiradc')" data-tab="hiradc" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-triangle-exclamation w-5 text-center text-amber-400"></i>
-            <span>HIRADC Risk Matrix</span>
-          </button>
-
-          <button onclick="switchTab('ptw')" data-tab="ptw" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-file-signature w-5 text-center text-blue-400"></i>
-            <span>Izin Kerja Digital (PTW)</span>
-          </button>
-
-          <button onclick="switchTab('incidents')" data-tab="incidents" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-user-injured w-5 text-center text-rose-400"></i>
-            <span>Insiden & Near Miss</span>
-          </button>
-
-          <button onclick="switchTab('inspections')" data-tab="inspections" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-clipboard-check w-5 text-center text-purple-400"></i>
-            <span>Audit & Inspeksi</span>
-          </button>
-
-          <button onclick="switchTab('sio')" data-tab="sio" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-id-card w-5 text-center text-teal-400"></i>
-            <span>SIA / SIO Sertifikasi</span>
-          </button>
-
-          <button onclick="switchTab('csms')" data-tab="csms" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-building-user w-5 text-center text-indigo-400"></i>
-            <span>Manajemen CSMS</span>
-          </button>
-
-          <button onclick="switchTab('legal')" data-tab="legal" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-scale-balanced w-5 text-center text-amber-500"></i>
-            <span>Legal Compliance</span>
-          </button>
-
-          <button onclick="switchTab('training')" data-tab="training" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-people-group w-5 text-center text-sky-400"></i>
-            <span>Training & TBM</span>
-          </button>
-
-          <button onclick="switchTab('inventory')" data-tab="inventory" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-boxes-packing w-5 text-center text-cyan-400"></i>
-            <span>Inventory APD</span>
-          </button>
-
-          <button onclick="switchTab('capa')" data-tab="capa" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-list-check w-5 text-center text-orange-400"></i>
-            <span>CAPA Tracking</span>
-          </button>
-
-          <button onclick="switchTab('reports')" data-tab="reports" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <i class="fa-solid fa-file-export w-5 text-center text-emerald-400"></i>
-            <span>Export & Laporan</span>
-          </button>
+          <!-- Item Navigasi -->
         </nav>
       </div>
     </aside>
@@ -233,7 +194,7 @@
             <i class="fa-solid fa-user-plus"></i><span>Daftarkan User Baru</span>
           </button>
         </div>
-        <div class="glass-card rounded-xl overflow-hidden">
+        <div class="glass-card rounded-xl overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-300">
             <thead class="bg-slate-900/90 text-slate-400 uppercase">
               <tr><th class="p-3">User ID</th><th class="p-3">Nama</th><th class="p-3">Username</th><th class="p-3">Role</th><th class="p-3">Dept</th><th class="p-3">Status</th></tr>
@@ -411,7 +372,7 @@
   </div>
 
   <!-- MODALS SECTION -->
-
+  
   <!-- USER REGISTRATION MODAL -->
   <div id="userModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-card bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4">
@@ -674,16 +635,61 @@
   </div>
 
   <script>
-    // HARDCODED URL GAS BACKEND (Otomatis Terload Tanpa Setting Manual)
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzTraCIwPY6CPqvol71AUQemHvnRUmX4TR0z4SJdxDC5ytjoVgNDAGYlFMACk2q302a/exec"; // Sesuaikan jika ada perubahan URL Deploy
+    // URL Google Apps Script Backend
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwqZ-wD5R0C3lS97pWBqL8b99-Z_vXzYh4sQ3G8/exec";
 
     let currentUserRole = sessionStorage.getItem('HSE_USER_ROLE') || '';
     let currentUserName = sessionStorage.getItem('HSE_USER_NAME') || '';
 
+    const navItemsConfig = [
+      { id: 'dashboard', name: 'Dashboard', icon: 'fa-chart-pie', color: 'text-emerald-400' },
+      { id: 'usermgmt', name: 'User Management', icon: 'fa-users-gear', color: 'text-purple-400', adminOnly: true },
+      { id: 'hiradc', name: 'HIRADC Risk Matrix', icon: 'fa-triangle-exclamation', color: 'text-amber-400' },
+      { id: 'ptw', name: 'Izin Kerja Digital (PTW)', icon: 'fa-file-signature', color: 'text-blue-400' },
+      { id: 'incidents', name: 'Insiden & Near Miss', icon: 'fa-user-injured', color: 'text-rose-400' },
+      { id: 'inspections', name: 'Audit & Inspeksi', icon: 'fa-clipboard-check', color: 'text-purple-400' },
+      { id: 'sio', name: 'SIA / SIO Sertifikasi', icon: 'fa-id-card', color: 'text-teal-400' },
+      { id: 'csms', name: 'Manajemen CSMS', icon: 'fa-building-user', color: 'text-indigo-400' },
+      { id: 'legal', name: 'Legal Compliance', icon: 'fa-scale-balanced', color: 'text-amber-500' },
+      { id: 'training', name: 'Training & TBM', icon: 'fa-people-group', color: 'text-sky-400' },
+      { id: 'inventory', name: 'Inventory APD', icon: 'fa-boxes-packing', color: 'text-cyan-400' },
+      { id: 'capa', name: 'CAPA Tracking', icon: 'fa-list-check', color: 'text-orange-400' },
+      { id: 'reports', name: 'Export & Laporan', icon: 'fa-file-export', color: 'text-emerald-400' }
+    ];
+
     window.addEventListener('DOMContentLoaded', () => {
+      renderNavigations();
       checkAuthStatus();
       updateReportInput();
     });
+
+    function renderNavigations() {
+      const desktopNav = document.getElementById('desktopNav');
+      const mobileNav = document.getElementById('mobileNav');
+      
+      let navHtml = navItemsConfig.map(item => `
+        <button id="nav-btn-${item.id}" onclick="switchTab('${item.id}')" data-tab="${item.id}" class="nav-item ${item.adminOnly ? 'admin-nav hidden' : ''} w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <i class="fa-solid ${item.icon} w-5 text-center ${item.color}"></i>
+          <span>${item.name}</span>
+        </button>
+      `).join('');
+
+      desktopNav.innerHTML = navHtml;
+      mobileNav.innerHTML = navHtml;
+    }
+
+    function toggleMobileSidebar() {
+      const drawer = document.getElementById('mobileSidebar');
+      const backdrop = document.getElementById('mobileSidebarBackdrop');
+      
+      if (drawer.classList.contains('-translate-x-full')) {
+        drawer.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        drawer.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
 
     async function handleDynamicLogin(e) {
       e.preventDefault();
@@ -722,7 +728,7 @@
       const overlay = document.getElementById('loginOverlay');
       const roleBadge = document.getElementById('userRoleBadge');
       const nameLabel = document.getElementById('loggedInNameLabel');
-      const navUserMgmt = document.getElementById('navUserMgmt');
+      const adminNavs = document.querySelectorAll('.admin-nav');
 
       if (!currentUserRole) {
         overlay.classList.remove('hidden');
@@ -735,13 +741,14 @@
       if (currentUserRole === 'admin') {
         roleBadge.innerText = "Administrator Mode";
         roleBadge.className = "text-[10px] text-purple-400 font-medium";
-        if (navUserMgmt) navUserMgmt.classList.remove('hidden');
+        adminNavs.forEach(el => el.classList.remove('hidden'));
         fetchUsersList();
       } else {
         roleBadge.innerText = "User Mode";
         roleBadge.className = "text-[10px] text-emerald-400 font-medium";
-        if (navUserMgmt) navUserMgmt.classList.add('hidden');
+        adminNavs.forEach(el => el.classList.add('hidden'));
       }
+      switchTab('dashboard');
       syncAllData();
     }
 
@@ -870,10 +877,19 @@
         el.classList.remove('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
         el.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/50');
       });
+      
       const selectedTab = document.getElementById(`tab-${tabId}`);
       if (selectedTab) selectedTab.classList.remove('hidden');
-      const activeNavBtn = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
-      if (activeNavBtn) activeNavBtn.classList.add('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
+      
+      document.querySelectorAll(`[data-tab="${tabId}"]`).forEach(btn => {
+        btn.classList.add('active', 'bg-slate-800/80', 'text-emerald-400', 'border', 'border-slate-700/50');
+      });
+
+      // Tutup drawer mobile secara otomatis setelah memilih menu
+      const drawer = document.getElementById('mobileSidebar');
+      if (drawer && !drawer.classList.contains('-translate-x-full')) {
+        toggleMobileSidebar();
+      }
     }
 
     async function callGasBackend(action, payload = {}) {
